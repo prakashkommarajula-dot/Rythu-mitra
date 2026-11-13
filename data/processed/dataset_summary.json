@@ -1,0 +1,77 @@
+{
+  "raw_file": "data/raw/crop_disease_advisory_dataset_raw.csv",
+  "audit_date": "2026-11-12",
+  "reconciliation_summary": {
+    "tier_1_raw_records": {
+      "total_rows": 1620,
+      "requires_further_diagnosis_rows": 519,
+      "invalid_placeholder_rows": 62,
+      "raw_confirmed_classification_rows": 1039,
+      "math_check": "519 + 62 + 1039 = 1620"
+    },
+    "tier_2_cleaned_corpus": {
+      "exact_full_row_duplicates_removed": 234,
+      "retained_corpus_rows": 1386,
+      "invalid_description_placeholders_dropped": 18,
+      "valid_corpus_rows": 1368,
+      "requires_further_diagnosis_saved_to_fallback": 439,
+      "invalid_label_placeholders_dropped": 47,
+      "confirmed_classification_rows": 882,
+      "math_check": "439 fallback + 47 invalid + 882 classification = 1368 valid rows"
+    },
+    "tier_3_unique_feature_inputs": {
+      "total_classification_records": 882,
+      "duplicate_model_input_prompts_removed": 341,
+      "unique_model_inputs_retained": 541,
+      "math_check": "882 - 341 = 541 unique model input samples",
+      "notebook_colab_comparison": "Notebook had 534 unique inputs due to pandas dropna() auto-parsing string 'NA' as NaN (dropping 7 additional rows). Both preserve all 23 classes."
+    },
+    "tier_4_partitioned_splits": {
+      "train_samples": 328,
+      "val_samples": 100,
+      "test_samples": 113,
+      "total_split_samples": 541,
+      "math_check": "328 (60.6%) + 100 (18.5%) + 113 (20.9%) = 541 total partitioned samples",
+      "data_leakage_overlap_train_val": 0,
+      "data_leakage_overlap_train_test": 0,
+      "data_leakage_overlap_val_test": 0,
+      "leakage_rate": "0.0%"
+    }
+  },
+  "class_coverage": {
+    "total_classes": 23,
+    "train_classes_present": 23,
+    "val_classes_present": 23,
+    "test_classes_present": 23,
+    "all_classes_retained": true
+  },
+  "class_counts_sum_verification": {
+    "confirmed_classification_corpus_sum": 882,
+    "partitioned_unique_inputs_sum": 541,
+    "classes_breakdown": {
+      "Pod Borer": {"corpus_count": 96, "unique_inputs": 67, "train": 45, "val": 10, "test": 12},
+      "Whitefly": {"corpus_count": 66, "unique_inputs": 46, "train": 29, "val": 8, "test": 9},
+      "Fusarium Wilt": {"corpus_count": 64, "unique_inputs": 42, "train": 27, "val": 7, "test": 8},
+      "Fruit Borer": {"corpus_count": 62, "unique_inputs": 42, "train": 26, "val": 8, "test": 8},
+      "Bacterial Wilt": {"corpus_count": 33, "unique_inputs": 22, "train": 13, "val": 4, "test": 5},
+      "Blast": {"corpus_count": 33, "unique_inputs": 23, "train": 14, "val": 4, "test": 5},
+      "Tikka Leaf Spot": {"corpus_count": 33, "unique_inputs": 23, "train": 14, "val": 4, "test": 5},
+      "Yellow Mosaic Virus": {"corpus_count": 32, "unique_inputs": 22, "train": 13, "val": 4, "test": 5},
+      "Thrips": {"corpus_count": 32, "unique_inputs": 22, "train": 13, "val": 4, "test": 5},
+      "Leaf Curl Virus": {"corpus_count": 32, "unique_inputs": 22, "train": 13, "val": 4, "test": 5},
+      "Powdery Mildew": {"corpus_count": 32, "unique_inputs": 23, "train": 14, "val": 4, "test": 5},
+      "Brown Planthopper": {"corpus_count": 32, "unique_inputs": 22, "train": 13, "val": 4, "test": 5},
+      "Turcicum Leaf Blight": {"corpus_count": 31, "unique_inputs": 22, "train": 13, "val": 4, "test": 5},
+      "Rhizome Rot": {"corpus_count": 31, "unique_inputs": 22, "train": 13, "val": 4, "test": 5},
+      "Pink Bollworm": {"corpus_count": 31, "unique_inputs": 22, "train": 13, "val": 4, "test": 5},
+      "Early Blight": {"corpus_count": 31, "unique_inputs": 22, "train": 13, "val": 4, "test": 5},
+      "Grain Mold": {"corpus_count": 31, "unique_inputs": 22, "train": 13, "val": 4, "test": 5},
+      "Leaf Blotch": {"corpus_count": 31, "unique_inputs": 22, "train": 13, "val": 4, "test": 5},
+      "Fall Armyworm": {"corpus_count": 31, "unique_inputs": 22, "train": 13, "val": 4, "test": 5},
+      "Yellow Vein Mosaic Virus": {"corpus_count": 31, "unique_inputs": 20, "train": 13, "val": 3, "test": 4},
+      "Fruit and Shoot Borer": {"corpus_count": 29, "unique_inputs": 21, "train": 12, "val": 4, "test": 5},
+      "Shoot Fly": {"corpus_count": 29, "unique_inputs": 21, "train": 12, "val": 4, "test": 5},
+      "Leaf Miner": {"corpus_count": 29, "unique_inputs": 21, "train": 12, "val": 4, "test": 5}
+    }
+  }
+}

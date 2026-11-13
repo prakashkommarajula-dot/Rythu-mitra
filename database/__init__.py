@@ -1,0 +1,17 @@
+"""
+Database package for Rythu Mithra.
+Uses Flask-SQLAlchemy with SQLite as the storage engine.
+"""
+
+from flask_sqlalchemy import SQLAlchemy
+
+db = SQLAlchemy()
+
+
+def init_db(app):
+    """Initialize database with the Flask application context."""
+    db.init_app(app)
+    with app.app_context():
+        # Import models so SQLAlchemy registers them with metadata
+        from . import models  # noqa: F401
+        db.create_all()

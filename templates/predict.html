@@ -1,0 +1,526 @@
+{% extends "base.html" %}
+
+{% block title %}Disease Detection Workspace | RYTHU MITHRA{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-xl-11">
+        <!-- Workspace Header Banner -->
+        <div class="card-modern mb-4 p-4 p-md-5 border-0 shadow-sm" style="background: linear-gradient(135deg, var(--c-forest-900) 0%, var(--c-forest-700) 100%); color: #ffffff;">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+                <div>
+                    <div class="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill mb-2" style="background: rgba(255,255,255,0.15); font-size: 0.8rem; color: var(--c-emerald-300);">
+                        <i class="bi bi-cpu-fill"></i> <span data-i18n="predict_nlp_badge">{{ t('predict_nlp_badge') }}</span>
+                    </div>
+                    <h2 class="fw-bold text-white mb-2" data-i18n="predict_title">
+                        {{ t('predict_title') }}
+                    </h2>
+                    <p class="text-white-50 mb-0 small" data-i18n="predict_subtitle">
+                        {{ t('predict_subtitle') }}
+                    </p>
+                </div>
+                <div>
+                    <span class="badge bg-white text-success px-3 py-2 rounded-pill fw-bold shadow-sm">
+                        <i class="bi bi-shield-check me-1"></i> <span data-i18n="predict_badge_classes">{{ t('predict_badge_classes') }}</span>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Form Card -->
+        <div class="card-modern p-4 p-md-5 mb-4">
+            <!-- Dynamic Error Alert -->
+            <div id="predict-error-alert" class="alert alert-danger d-none rounded-3 mb-4" role="alert"></div>
+
+            <form id="disease-prediction-form">
+                <!-- Row 1: Crop and Stage Selection -->
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <label for="crop_select" class="form-label-modern" data-i18n="form_crop_label">
+                            {{ t('form_crop_label') }}
+                        </label>
+                        <select class="form-select-modern" id="crop_select" name="crop_select" required>
+                            <option value="" disabled selected data-i18n="form_crop_placeholder">{{ t('form_crop_placeholder') }}</option>
+                            {% for crop in crops %}
+                                <option value="{{ crop.id }}">{% if current_lang == 'te' %}{{ crop.name_te }} ({{ crop.name_en }}){% else %}{{ crop.name_en }}{% endif %}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="stage_select" class="form-label-modern" data-i18n="form_stage_label">
+                            {{ t('form_stage_label') }}
+                        </label>
+                        <select class="form-select-modern" id="stage_select" name="stage_select">
+                            <option value="" selected data-i18n="form_stage_placeholder">{{ t('form_stage_placeholder') }}</option>
+                            {% for stage in stages %}
+                                <option value="{{ stage.id }}">{% if current_lang == 'te' %}{{ stage.name_te }} ({{ stage.name_en }}){% else %}{{ stage.name_en }}{% endif %}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Crop-Specific Quick Add Symptom Chips Container -->
+                <div id="quick-add-container" class="mb-4 d-none">
+                    <div class="d-flex flex-wrap justify-content-between align-items-center mb-2 gap-2">
+                        <label class="form-label-modern mb-0">
+                            <i class="bi bi-tags-fill text-success me-1"></i>
+                            <span data-i18n="quick_add_title">{{ t('quick_add_title') }}</span>
+                            <span id="quick-add-crop-label" class="badge bg-success-subtle text-success ms-1"></span>
+                        </label>
+                        <small class="text-muted" data-i18n="quick_add_hint">{{ t('quick_add_hint') }}</small>
+                    </div>
+                    <div id="quick-add-chips" class="d-flex flex-wrap gap-2 p-3 rounded-4 bg-light border">
+                        <!-- Populated dynamically via /api/crop-symptoms -->
+                    </div>
+                </div>
+
+                <!-- Row 2: Symptoms Description with Web Speech Voice Buttons -->
+                <div class="mb-4">
+                    <div class="d-flex flex-wrap justify-content-between align-items-center mb-2 gap-2">
+                        <label for="symptom_description" class="form-label-modern mb-0" data-i18n="form_symptom_label">
+                            {{ t('form_symptom_label') }}
+                        </label>
+
+                        <!-- Voice Mic Buttons -->
+                        <div class="d-flex gap-2">
+                            <button type="button" class="btn-voice-modern" data-lang-code="te-IN" onclick="startSpeechRecognition('symptom_description', 'te-IN', 'speech-live-status')">
+                                <i class="bi bi-mic-fill text-danger"></i>
+                                <span data-i18n="btn_voice_te">{{ t('btn_voice_te') }}</span>
+                            </button>
+                            <button type="button" class="btn-voice-modern" data-lang-code="en-IN" onclick="startSpeechRecognition('symptom_description', 'en-IN', 'speech-live-status')">
+                                <i class="bi bi-mic text-primary"></i>
+                                <span data-i18n="btn_voice_en">{{ t('btn_voice_en') }}</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Live Listening Wave Indicator -->
+                    <div id="speech-live-status" class="alert alert-warning py-2 px-3 d-none rounded-3 mb-2 small shadow-sm">
+                        <!-- Populated dynamically by app.js -->
+                    </div>
+
+                    <!-- Large Farmer Friendly Textarea -->
+                    <textarea class="form-control-modern" id="symptom_description" name="symptom_description" rows="5" placeholder="{{ t('form_symptom_placeholder') }}" data-i18n-placeholder="form_symptom_placeholder" required></textarea>
+                    
+                    <div class="d-flex justify-content-between align-items-center mt-2 small text-muted">
+                        <div>
+                            <i class="bi bi-info-circle me-1 text-success"></i> <span data-i18n="form_voice_hint">{{ t('form_voice_hint') }}</span>
+                        </div>
+                        <button type="button" class="btn btn-sm btn-link text-muted p-0 text-decoration-none" onclick="document.getElementById('symptom_description').value=''">
+                            <i class="bi bi-eraser me-1"></i> <span data-i18n="btn_clear">{{ t('btn_clear') }}</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Submit Button & Async Loading State -->
+                <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 pt-3 border-top">
+                    <span class="small text-muted">
+                        <i class="bi bi-shield-lock text-success me-1"></i> <span data-i18n="predict_verified_badge">{{ t('predict_verified_badge') }}</span>
+                    </span>
+
+                    <button type="submit" id="submit-predict-btn" class="btn btn-premium-primary px-5 py-3 shadow">
+                        <i class="bi bi-search me-1"></i> <span data-i18n="btn_submit_predict">{{ t('btn_submit_predict') }}</span>
+                    </button>
+                </div>
+
+                <!-- Loading Spinner Indicator -->
+                <div id="predict-loading-indicator" class="text-center py-5 d-none">
+                    <div class="spinner-border text-success mb-3" role="status" style="width: 3rem; height: 3rem;">
+                        <span class="visually-hidden" data-i18n="loading_text">{{ t('loading_text') }}</span>
+                    </div>
+                    <h5 class="fw-bold text-dark mb-1" data-i18n="predict_loading_title">
+                        {{ t('predict_loading_title') }}
+                    </h5>
+                    <p class="small text-muted" data-i18n="predict_loading_desc">
+                        {{ t('predict_loading_desc') }}
+                    </p>
+                </div>
+            </form>
+        </div>
+
+        <!-- 3. Redesigned Visual Prediction Result Card & Actionable Solutions -->
+        <div id="prediction-results-section" class="result-card-elevated mb-5 d-none">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 border-bottom pb-3 mb-4">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="stat-icon-wrapper" style="width: 46px; height: 46px;">
+                        <i class="bi bi-shield-check fs-4"></i>
+                    </div>
+                    <div>
+                        <h4 class="fw-bold text-dark mb-0" data-i18n="res_card_title">{{ t('res_card_title') }}</h4>
+                        <small class="text-muted" data-i18n="predict_inference_done">{{ t('predict_inference_done') }}</small>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                    <span id="res-severity-badge" class="badge bg-danger-subtle text-danger px-3 py-2 rounded-pill fw-bold border">
+                        <i class="bi bi-exclamation-octagon me-1"></i> <span id="res-severity-text">High Severity</span>
+                    </span>
+                    <span class="badge bg-success-subtle text-success-emphasis border border-success-subtle px-3 py-2 rounded-pill fw-bold" data-i18n="predict_badge_roberta">
+                        {{ t('predict_badge_roberta') }}
+                    </span>
+                </div>
+            </div>
+
+            <!-- Section 2: Farmer's Reported Symptoms Card -->
+            <div class="p-3 bg-light rounded-4 border mb-4">
+                <div class="d-flex align-items-center justify-content-between mb-1">
+                    <span class="small text-muted fw-bold text-uppercase" data-i18n="res_farmer_symptoms_title">
+                        <i class="bi bi-chat-quote-fill text-success me-1"></i> {{ t('res_farmer_symptoms_title', "Farmer's Reported Symptoms:") }}
+                    </span>
+                    <button type="button" class="btn btn-sm btn-outline-success rounded-pill py-0 px-2" onclick="window.speakText('res-farmer-symptoms-text', window.getCurrentLanguage())">
+                        <i class="bi bi-volume-up-fill me-1"></i> <span data-i18n="btn_listen">{{ t('btn_listen', 'Listen') }}</span>
+                    </button>
+                </div>
+                <div id="res-farmer-symptoms-text" class="text-dark fw-semibold fst-italic">--</div>
+            </div>
+
+            <!-- Identified Pathogen & Relative Confidence Bar -->
+            <div class="row g-4 align-items-center mb-4">
+                <div class="col-md-7">
+                    <div class="small text-muted fw-bold text-uppercase mb-1" data-i18n="res_detected_title">
+                        {{ t('res_detected_title') }}
+                    </div>
+                    <div id="res-predicted-disease" class="disease-hero-pill mb-2">
+                        --
+                    </div>
+                    <div id="res-scientific-row" class="text-muted fst-italic small mb-2 d-none">
+                        <span data-i18n="res_scientific_name">{{ t('res_scientific_name') }}</span>
+                        <strong id="res-scientific-name" class="text-dark"></strong>
+                    </div>
+                    <div class="small text-muted mb-2">
+                        <span data-i18n="res_crop_label">{{ t('res_crop_label') }}</span>
+                        <strong id="res-crop-name" class="text-dark">--</strong>
+                    </div>
+                    <p id="res-message-text" class="text-secondary small mb-0">
+                        --
+                    </p>
+                </div>
+
+                <div class="col-md-5">
+                    <div class="p-3 bg-white rounded-4 border shadow-sm">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <span class="small fw-semibold text-muted" data-i18n="res_confidence_title">{{ t('res_confidence_title') }}</span>
+                            <span id="res-prediction-score" class="fs-5 fw-bold text-success">--%</span>
+                        </div>
+                        <div class="progress-track-modern mb-2">
+                            <div id="res-score-progress-bar" class="progress-bar-modern" style="width: 0%"></div>
+                        </div>
+                        <div id="res-score-explanation" class="small text-muted" style="font-size: 0.74rem;" data-i18n="res_confidence_note">
+                            {{ t('res_confidence_note') }}
+                        </div>
+                        <div class="small text-muted mt-2 border-top pt-1" style="font-size: 0.72rem;" data-i18n="res_score_limitations">
+                            <i class="bi bi-info-circle me-1"></i> {{ t('res_score_limitations', 'Confidence scores reflect symptom pattern matching and require field verification.') }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Safety Warning Alert (if needs_further_diagnosis) -->
+            <div id="res-warning-alert" class="alert alert-warning border-warning d-flex align-items-start gap-3 rounded-4 p-3 mb-4 d-none" role="alert">
+                <i class="bi bi-exclamation-triangle-fill fs-3 text-warning"></i>
+                <div>
+                    <h6 class="fw-bold text-dark mb-1" data-i18n="res_warning_title">{{ t('res_warning_title') }}</h6>
+                    <p class="small text-dark mb-0" data-i18n="res_warning_desc">
+                        {{ t('res_warning_desc') }}
+                    </p>
+                </div>
+            </div>
+
+            <!-- Interactive Further Diagnosis Questions Container (when diagnosis is uncertain) -->
+            <div id="res-refine-container" class="card border-warning bg-warning bg-opacity-10 rounded-4 p-4 mb-4 d-none">
+                <div class="d-flex align-items-center gap-2 mb-2">
+                    <i class="bi bi-patch-question-fill text-warning fs-4"></i>
+                    <h5 class="fw-bold text-dark mb-0" data-i18n="refine_diagnosis_title">{{ t('refine_diagnosis_title') }}</h5>
+                </div>
+                <p class="small text-muted mb-3" data-i18n="refine_diagnosis_desc">
+                    {{ t('refine_diagnosis_desc') }}
+                </p>
+                <div id="res-refine-questions-list" class="d-flex flex-column gap-2 mb-3">
+                    <!-- Populated dynamically by app.js -->
+                </div>
+                <div>
+                    <button type="button" id="btn-refine-diagnosis" class="btn btn-warning fw-semibold px-4 py-2 rounded-pill shadow-sm">
+                        <i class="bi bi-arrow-clockwise me-1"></i>
+                        <span data-i18n="btn_refine_diagnosis">{{ t('btn_refine_diagnosis') }}</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Top 3 Predictions Breakdown -->
+            <div class="mb-4">
+                <h6 class="fw-bold text-dark mb-2" data-i18n="res_top3_title">{{ t('res_top3_title') }}</h6>
+                <div id="res-top-predictions-list">
+                    <!-- Populated dynamically by app.js -->
+                </div>
+            </div>
+
+            <!-- 4. Complete Actionable Agricultural Solutions Accordion (13-Part Visual Hierarchy) -->
+            <div id="res-actionable-section" class="mb-4">
+                <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-shield-fill-check text-success fs-5"></i>
+                        <h5 class="fw-bold text-dark mb-0" data-i18n="res_actionable_solutions">{{ t('res_actionable_solutions') }}</h5>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button type="button" class="btn btn-sm btn-outline-success rounded-pill px-3 shadow-sm d-inline-flex align-items-center gap-1" id="btn-listen-aloud" onclick="window.speakDiagnosisAdvisory()">
+                            <i class="bi bi-volume-up-fill text-success"></i>
+                            <span data-i18n="btn_listen_advisory">{{ t('btn_listen_advisory', 'Listen Aloud') }}</span>
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3 shadow-sm d-inline-flex align-items-center gap-1" id="btn-print-report" onclick="window.print()">
+                            <i class="bi bi-printer-fill"></i>
+                            <span data-i18n="btn_print_report">{{ t('btn_print_report', 'Print Diagnosis Report') }}</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="accordion custom-accordion" id="actionableAdvisoryAccordion">
+                    <!-- Section 1: Immediate Action (Structured A, B, C, D) -->
+                    <div class="accordion-item rounded-3 mb-2 border shadow-sm overflow-hidden">
+                        <h2 class="accordion-header" id="headingImmediate">
+                            <button class="accordion-button fw-bold text-dark" type="button" data-bs-toggle="collapse" data-bs-target="#collapseImmediate" aria-expanded="true">
+                                <i class="bi bi-lightning-charge-fill text-warning me-2"></i>
+                                <span data-i18n="res_immediate_action">{{ t('res_immediate_action') }}</span>
+                            </button>
+                        </h2>
+                        <div id="collapseImmediate" class="accordion-collapse collapse show">
+                            <div class="accordion-body text-secondary small">
+                                <!-- Block A: What is the problem? -->
+                                <div class="mb-3 p-3 bg-white rounded-3 border">
+                                    <div class="fw-bold text-dark mb-1 d-flex align-items-center gap-1">
+                                        <i class="bi bi-question-circle-fill text-primary"></i>
+                                        <span data-i18n="imm_what_problem_title">{{ t('imm_what_problem_title', 'A. What is the problem?') }}</span>
+                                    </div>
+                                    <p id="sol-what-is-problem" class="text-secondary mb-0">--</p>
+                                </div>
+
+                                <!-- Block B: Why might this problem occur? -->
+                                <div class="mb-3 p-3 bg-light rounded-3 border">
+                                    <div class="fw-bold text-dark mb-1 d-flex align-items-center gap-1">
+                                        <i class="bi bi-cloud-sun-fill text-warning"></i>
+                                        <span data-i18n="imm_why_occurs_title">{{ t('imm_why_occurs_title', 'B. Why might this problem occur?') }}</span>
+                                    </div>
+                                    <p id="sol-why-it-occurs" class="text-secondary mb-0">--</p>
+                                </div>
+
+                                <!-- Block C: What should the farmer do immediately? -->
+                                <div class="mb-3 p-3 bg-white rounded-3 border">
+                                    <div class="fw-bold text-dark mb-2 d-flex align-items-center gap-1">
+                                        <i class="bi bi-list-check text-success"></i>
+                                        <span data-i18n="imm_steps_title">{{ t('imm_steps_title', 'C. What should the farmer do immediately?') }}</span>
+                                    </div>
+                                    <ol id="sol-immediate-steps" class="mb-0 ps-3 text-secondary">
+                                        <li>--</li>
+                                    </ol>
+                                </div>
+
+                                <!-- Block D: When should the farmer take action? -->
+                                <div class="p-3 bg-warning-subtle rounded-3 border border-warning-subtle">
+                                    <div class="fw-bold text-dark mb-1 d-flex align-items-center gap-1">
+                                        <i class="bi bi-clock-history text-danger"></i>
+                                        <span data-i18n="imm_urgency_title">{{ t('imm_urgency_title', 'D. When should the farmer take action?') }}</span>
+                                    </div>
+                                    <p id="sol-action-urgency" class="text-dark fw-semibold mb-0">--</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 2: Chemical Control (Exact dosages & waiting period) -->
+                    <div class="accordion-item rounded-3 mb-2 border shadow-sm overflow-hidden">
+                        <h2 class="accordion-header" id="headingChemical">
+                            <button class="accordion-button collapsed fw-bold text-dark" type="button" data-bs-toggle="collapse" data-bs-target="#collapseChemical">
+                                <i class="bi bi-prescription2 text-danger me-2"></i>
+                                <span data-i18n="res_chemical_control">{{ t('res_chemical_control') }}</span>
+                            </button>
+                        </h2>
+                        <div id="collapseChemical" class="accordion-collapse collapse">
+                            <div class="accordion-body">
+                                <!-- Verified Chemical Box -->
+                                <div id="sol-chem-verified-box" class="d-none">
+                                    <div class="p-3 bg-danger bg-opacity-10 border border-danger border-opacity-25 rounded-3 mb-3">
+                                        <div class="d-flex justify-content-between align-items-start mb-2">
+                                            <div class="fw-bold text-danger">
+                                                <i class="bi bi-capsule me-1"></i>
+                                                <span data-i18n="chem_recommended_title">{{ t('chem_recommended_title', 'Recommended Chemical Formulation:') }}</span>
+                                            </div>
+                                            <span class="badge bg-danger text-white rounded-pill px-2 py-1 small" data-i18n="cibrc_approved">{{ t('cibrc_approved', 'CIBRC / University Verified') }}</span>
+                                        </div>
+                                        <h6 id="sol-chem-product" class="fw-bold text-dark mb-1">--</h6>
+                                        <div class="small text-danger fw-semibold">
+                                            <span data-i18n="chem_dosage_label">{{ t('chem_dosage_label', 'Dosage:') }}</span>
+                                            <span id="sol-chem-dosage" class="text-dark">--</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="row g-2 small text-muted mb-3">
+                                        <div class="col-sm-6">
+                                            <div class="p-2 bg-light rounded border">
+                                                <i class="bi bi-droplet-half text-primary me-1"></i>
+                                                <strong data-i18n="chem_water_label">{{ t('chem_water_label', 'Water Quantity:') }}</strong>
+                                                <div id="sol-chem-water" class="text-dark mt-1">--</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div class="p-2 bg-light rounded border">
+                                                <i class="bi bi-spray text-success me-1"></i>
+                                                <strong data-i18n="chem_method_label">{{ t('chem_method_label', 'Application Method:') }}</strong>
+                                                <div id="sol-chem-method" class="text-dark mt-1">--</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div class="p-2 bg-light rounded border">
+                                                <i class="bi bi-hourglass-split text-warning me-1"></i>
+                                                <strong data-i18n="chem_phi_label">{{ t('chem_phi_label', 'Waiting Period (PHI):') }}</strong>
+                                                <div id="sol-chem-phi" class="text-dark mt-1">--</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div class="p-2 bg-light rounded border">
+                                                <i class="bi bi-shield-exclamation text-danger me-1"></i>
+                                                <strong data-i18n="chem_safety_label">{{ t('chem_safety_label', 'Safety Precaution:') }}</strong>
+                                                <div id="sol-chem-safety" class="text-dark mt-1">--</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Unverified / Uncertain Fallback Box -->
+                                <div id="sol-chem-unverified-box" class="p-3 bg-secondary bg-opacity-10 rounded-3 border">
+                                    <div class="d-flex align-items-center gap-2 text-secondary fw-semibold mb-1">
+                                        <i class="bi bi-shield-x fs-5 text-secondary"></i>
+                                        <span data-i18n="chem_unverified_title">{{ t('chem_unverified_title', 'Chemical Spray Policy') }}</span>
+                                    </div>
+                                    <p id="sol-chem-unverified-msg" class="small text-muted mb-0">
+                                        {{ t('chem_unverified_default', 'No verified chemical recommendation is available for this diagnosis. Do not spray chemicals without confirmed pathogen identification.') }}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 3: Organic Management -->
+                    <div class="accordion-item rounded-3 mb-2 border shadow-sm overflow-hidden">
+                        <h2 class="accordion-header" id="headingOrganic">
+                            <button class="accordion-button collapsed fw-bold text-dark" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOrganic">
+                                <i class="bi bi-flower1 text-success me-2"></i>
+                                <span data-i18n="res_organic_mgmt">{{ t('res_organic_mgmt') }}</span>
+                            </button>
+                        </h2>
+                        <div id="collapseOrganic" class="accordion-collapse collapse">
+                            <div class="accordion-body text-secondary small" id="sol-organic-text">
+                                --
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 4: Biological Control -->
+                    <div class="accordion-item rounded-3 mb-2 border shadow-sm overflow-hidden">
+                        <h2 class="accordion-header" id="headingBio">
+                            <button class="accordion-button collapsed fw-bold text-dark" type="button" data-bs-toggle="collapse" data-bs-target="#collapseBio">
+                                <i class="bi bi-bug-fill text-info me-2"></i>
+                                <span data-i18n="res_bio_control">{{ t('res_bio_control') }}</span>
+                            </button>
+                        </h2>
+                        <div id="collapseBio" class="accordion-collapse collapse">
+                            <div class="accordion-body text-secondary small" id="sol-bio-text">
+                                --
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 5: Cultural Control -->
+                    <div class="accordion-item rounded-3 mb-2 border shadow-sm overflow-hidden">
+                        <h2 class="accordion-header" id="headingCultural">
+                            <button class="accordion-button collapsed fw-bold text-dark" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCultural">
+                                <i class="bi bi-tree-fill text-success me-2"></i>
+                                <span data-i18n="res_cultural_control">{{ t('res_cultural_control') }}</span>
+                            </button>
+                        </h2>
+                        <div id="collapseCultural" class="accordion-collapse collapse">
+                            <div class="accordion-body text-secondary small" id="sol-cultural-text">
+                                --
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 6: Prevention & Field Hygiene -->
+                    <div class="accordion-item rounded-3 mb-2 border shadow-sm overflow-hidden">
+                        <h2 class="accordion-header" id="headingPrevention">
+                            <button class="accordion-button collapsed fw-bold text-dark" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePrevention">
+                                <i class="bi bi-shield-shaded text-primary me-2"></i>
+                                <span data-i18n="res_prevention">{{ t('res_prevention') }}</span>
+                            </button>
+                        </h2>
+                        <div id="collapsePrevention" class="accordion-collapse collapse">
+                            <div class="accordion-body text-secondary small">
+                                <div class="fw-bold text-dark mb-2 d-flex align-items-center gap-1">
+                                    <i class="bi bi-check-circle-fill text-success"></i>
+                                    <span data-i18n="prev_practical_title">{{ t('prev_practical_title', 'Practical Preventive Recommendations:') }}</span>
+                                </div>
+                                <ol id="sol-prevention-steps" class="mb-3 ps-3 text-secondary">
+                                    <li>--</li>
+                                </ol>
+
+                                <!-- Subsection: Next Season Prevention -->
+                                <div class="p-3 bg-light rounded-3 border">
+                                    <div class="fw-bold text-dark mb-1 d-flex align-items-center gap-1">
+                                        <i class="bi bi-calendar2-range text-primary"></i>
+                                        <span data-i18n="prev_next_season_title">{{ t('prev_next_season_title', 'How to prevent this problem in the next crop season:') }}</span>
+                                    </div>
+                                    <p id="sol-next-season-text" class="text-secondary mb-0">--</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 7: Safety Precautions & PPE -->
+                    <div class="accordion-item rounded-3 mb-2 border shadow-sm overflow-hidden">
+                        <h2 class="accordion-header" id="headingSafety">
+                            <button class="accordion-button collapsed fw-bold text-dark" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSafety">
+                                <i class="bi bi-shield-exclamation text-warning me-2"></i>
+                                <span data-i18n="res_safety">{{ t('res_safety') }}</span>
+                            </button>
+                        </h2>
+                        <div id="collapseSafety" class="accordion-collapse collapse">
+                            <div class="accordion-body text-secondary small" id="sol-safety-text">
+                                --
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 8: Agricultural Officer & KVK Contact -->
+                    <div class="accordion-item rounded-3 mb-2 border shadow-sm overflow-hidden">
+                        <h2 class="accordion-header" id="headingOfficer">
+                            <button class="accordion-button collapsed fw-bold text-dark" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOfficer">
+                                <i class="bi bi-telephone-outbound-fill text-success me-2"></i>
+                                <span data-i18n="res_contact_guidance">{{ t('res_contact_guidance') }}</span>
+                            </button>
+                        </h2>
+                        <div id="collapseOfficer" class="accordion-collapse collapse">
+                            <div class="accordion-body small text-muted">
+                                <p class="mb-2" data-i18n="kvk_guidance_intro">{{ t('kvk_guidance_intro', 'For field verification, soil testing, or subsidy on bio-agents, contact your local officials:') }}</p>
+                                <ul class="list-unstyled mb-2">
+                                    <li class="mb-1"><i class="bi bi-check2-circle text-success me-2"></i><strong data-i18n="kvk_mao_label">{{ t('kvk_mao_label', 'Mandal Agricultural Officer (MAO)') }}</strong> <span data-i18n="kvk_mao_desc">{{ t('kvk_mao_desc', 'at your local Rythu Bharosa Kendram (RBK) / Rythu Vedika.') }}</span></li>
+                                    <li class="mb-1"><i class="bi bi-check2-circle text-success me-2"></i><strong data-i18n="kvk_center_label">{{ t('kvk_center_label', 'Krishi Vigyan Kendra (KVK)') }}</strong> <span data-i18n="kvk_center_desc">{{ t('kvk_center_desc', '/ ANGRAU / PJTSAU District Scientists.') }}</span></li>
+                                    <li class="mb-1"><i class="bi bi-telephone-fill text-danger me-2"></i><strong data-i18n="kisan_call_label">{{ t('kisan_call_label', 'Kisan Call Center (Toll-Free):') }}</strong> 1800-180-1551 / 155251 (6:00 AM to 10:00 PM).</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Advisory Call to Action & Utility Buttons -->
+            <div class="d-flex flex-wrap gap-3 pt-3 border-top">
+                <a id="res-advisory-btn" href="{{ url_for('advisory.advisory_page') }}" class="btn btn-premium-primary">
+                    <i class="bi bi-book-half"></i>
+                    <span data-i18n="res_btn_advisory">{{ t('res_btn_advisory') }}</span>
+                </a>
+                <button type="button" id="btn-diagnose-another" class="btn btn-premium-secondary" onclick="document.getElementById('symptom_description').focus(); window.scrollTo({top: 0, behavior: 'smooth'});">
+                    <i class="bi bi-arrow-repeat me-1"></i> <span data-i18n="btn_predict_again">{{ t('btn_predict_again') }}</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

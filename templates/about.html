@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+
+{% block title %}About System | RYTHU MITHRA{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-xl-11">
+        <!-- Header Banner -->
+        <div class="card-modern mb-4 p-4 p-md-5 border-0 shadow-sm" style="background: linear-gradient(135deg, var(--c-forest-900) 0%, var(--c-forest-700) 100%); color: #ffffff;">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+                <div>
+                    <div class="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill mb-2" style="background: rgba(255,255,255,0.15); font-size: 0.8rem; color: var(--c-emerald-300);">
+                        <i class="bi bi-mortarboard-fill"></i> <span data-i18n="about_tag">{{ t('about_tag', 'Final-Year Engineering Demonstration') }}</span>
+                    </div>
+                    <h2 class="fw-bold text-white mb-2" data-i18n="about_title">
+                        {{ t('about_title') }}
+                    </h2>
+                    <p class="text-white-50 mb-0 small" data-i18n="about_subtitle">
+                        {{ t('about_subtitle') }}
+                    </p>
+                </div>
+                <div>
+                    <span class="badge bg-white text-success px-3 py-2 rounded-pill fw-bold shadow-sm" data-i18n="about_release_badge">
+                        {{ t('about_release_badge') }}
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mission & Overview Card -->
+        <div class="card-modern p-4 p-md-5 mb-4">
+            <h4 class="fw-bold text-dark mb-3" data-i18n="about_mission_title">{{ t('about_mission_title') }}</h4>
+            <p class="text-muted leading-relaxed mb-4" data-i18n="about_mission_desc">
+                {{ t('about_mission_desc') }}
+            </p>
+
+            <!-- Metrics Highlights -->
+            <div class="row g-3 mb-4">
+                <div class="col-md-4">
+                    <div class="p-4 bg-light rounded-4 text-center border h-100">
+                        <div class="fs-1 text-success mb-2"><i class="bi bi-shield-check"></i></div>
+                        <h5 class="fw-bold text-dark mb-1" data-i18n="about_stat_pathogens">{{ t('about_stat_pathogens') }}</h5>
+                        <p class="small text-muted mb-0" data-i18n="about_stat_pathogens_sub">{{ t('about_stat_pathogens_sub') }}</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="p-4 bg-light rounded-4 text-center border h-100">
+                        <div class="fs-1 text-success mb-2"><i class="bi bi-trophy-fill"></i></div>
+                        <h5 class="fw-bold text-dark mb-1" data-i18n="about_eval_acc">{{ t('about_eval_acc') }}</h5>
+                        <p class="small text-muted mb-0" data-i18n="about_stat_acc_sub">{{ t('about_stat_acc_sub') }}</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="p-4 bg-light rounded-4 text-center border h-100">
+                        <div class="fs-1 text-success mb-2"><i class="bi bi-translate"></i></div>
+                        <h5 class="fw-bold text-dark mb-1" data-i18n="about_stat_bilingual">{{ t('about_stat_bilingual') }}</h5>
+                        <p class="small text-muted mb-0" data-i18n="about_stat_bilingual_sub">{{ t('about_stat_bilingual_sub') }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tech Stack Component Cards -->
+            <h4 class="fw-bold text-dark mb-3" data-i18n="about_tech_stack_title">{{ t('about_tech_stack_title') }}</h4>
+            <div class="row g-3 mb-4">
+                <div class="col-md-6">
+                    <div class="p-4 border rounded-4 bg-light h-100">
+                        <h6 class="fw-bold text-dark"><i class="bi bi-window text-success me-2"></i> <span data-i18n="about_frontend_title">{{ t('about_frontend_title') }}</span></h6>
+                        <ul class="small text-muted mb-0 ps-3">
+                            <li data-i18n="about_frontend_1">{{ t('about_frontend_1') }}</li>
+                            <li data-i18n="about_frontend_2">{{ t('about_frontend_2') }}</li>
+                            <li data-i18n="about_frontend_3">{{ t('about_frontend_3') }}</li>
+                            <li data-i18n="about_frontend_4">{{ t('about_frontend_4') }}</li>
+                            <li data-i18n="about_frontend_5">{{ t('about_frontend_5') }}</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="p-4 border rounded-4 bg-light h-100">
+                        <h6 class="fw-bold text-dark"><i class="bi bi-gear-wide-connected text-success me-2"></i> <span data-i18n="about_backend_title">{{ t('about_backend_title') }}</span></h6>
+                        <ul class="small text-muted mb-0 ps-3">
+                            <li data-i18n="about_backend_1">{{ t('about_backend_1') }}</li>
+                            <li data-i18n="about_backend_2">{{ t('about_backend_2') }}</li>
+                            <li data-i18n="about_backend_3">{{ t('about_backend_3') }}</li>
+                            <li data-i18n="about_backend_4">{{ t('about_backend_4') }}</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="p-4 border rounded-4 bg-light h-100">
+                        <h6 class="fw-bold text-dark"><i class="bi bi-cpu text-success me-2"></i> <span data-i18n="about_nlp_title">{{ t('about_nlp_title') }}</span></h6>
+                        <ul class="small text-muted mb-0 ps-3">
+                            <li data-i18n="about_nlp_1">{{ t('about_nlp_1') }}</li>
+                            <li data-i18n="about_nlp_2">{{ t('about_nlp_2') }}</li>
+                            <li data-i18n="about_nlp_3">{{ t('about_nlp_3') }}</li>
+                            <li data-i18n="about_nlp_4">{{ t('about_nlp_4') }}</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="p-4 border rounded-4 bg-light h-100">
+                        <h6 class="fw-bold text-dark"><i class="bi bi-camera text-success me-2"></i> <span data-i18n="about_cv_title">{{ t('about_cv_title') }}</span></h6>
+                        <ul class="small text-muted mb-0 ps-3">
+                            <li data-i18n="about_cv_1">{{ t('about_cv_1') }}</li>
+                            <li data-i18n="about_cv_2">{{ t('about_cv_2') }}</li>
+                            <li data-i18n="about_cv_3">{{ t('about_cv_3') }}</li>
+                            <li data-i18n="about_cv_4">{{ t('about_cv_4') }}</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Architecture Information Flow Diagram -->
+            <div class="p-4 bg-white rounded-4 border">
+                <h5 class="fw-bold text-dark mb-3"><i class="bi bi-diagram-3 text-success me-2"></i> <span data-i18n="about_flow_title">{{ t('about_flow_title') }}</span></h5>
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-2 text-center small text-muted">
+                    <div class="p-3 border rounded-3 bg-light flex-fill w-100">
+                        <div class="fw-bold text-dark" data-i18n="about_flow_step1_title">{{ t('about_flow_step1_title') }}</div>
+                        <div class="small text-muted" data-i18n="about_flow_step1_desc">{{ t('about_flow_step1_desc') }}</div>
+                    </div>
+                    <div class="text-success fs-5"><i class="bi bi-arrow-right d-none d-md-block"></i><i class="bi bi-arrow-down d-md-none"></i></div>
+                    <div class="p-3 border rounded-3 bg-light flex-fill w-100">
+                        <div class="fw-bold text-dark" data-i18n="about_flow_step2_title">{{ t('about_flow_step2_title') }}</div>
+                        <div class="small text-muted" data-i18n="about_flow_step2_desc">{{ t('about_flow_step2_desc') }}</div>
+                    </div>
+                    <div class="text-success fs-5"><i class="bi bi-arrow-right d-none d-md-block"></i><i class="bi bi-arrow-down d-md-none"></i></div>
+                    <div class="p-3 border rounded-3 bg-light flex-fill w-100">
+                        <div class="fw-bold text-dark" data-i18n="about_flow_step3_title">{{ t('about_flow_step3_title') }}</div>
+                        <div class="small text-muted" data-i18n="about_flow_step3_desc">{{ t('about_flow_step3_desc') }}</div>
+                    </div>
+                    <div class="text-success fs-5"><i class="bi bi-arrow-right d-none d-md-block"></i><i class="bi bi-arrow-down d-md-none"></i></div>
+                    <div class="p-3 border rounded-3 bg-light flex-fill w-100">
+                        <div class="fw-bold text-dark" data-i18n="about_flow_step4_title">{{ t('about_flow_step4_title') }}</div>
+                        <div class="small text-muted" data-i18n="about_flow_step4_desc">{{ t('about_flow_step4_desc') }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

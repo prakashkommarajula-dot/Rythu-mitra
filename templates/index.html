@@ -1,0 +1,236 @@
+{% extends "base.html" %}
+
+{% block title %}Home | RYTHU MITHRA - Your Smart Farming Companion{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-xl-11">
+        <!-- 1. Modern Hero Section -->
+        <div class="hero-banner-modern">
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <div class="hero-tag-badge mb-3">
+                        <span data-i18n="hero_badge">{{ t('hero_badge') }}</span>
+                    </div>
+                    <h1 class="hero-title-modern" data-i18n="hero_title">
+                        {{ t('hero_title') }}
+                    </h1>
+                    <p class="hero-desc-modern" data-i18n="hero_subtitle">
+                        {{ t('hero_subtitle') }}
+                    </p>
+                    <div class="d-flex flex-wrap gap-3">
+                        <a href="{{ url_for('disease.predict_page') }}?lang={{ current_lang }}" class="btn btn-premium-primary">
+                            <i class="bi bi-chat-square-text-fill"></i>
+                            <span data-i18n="hero_cta_predict">{{ t('hero_cta_predict') }}</span>
+                        </a>
+                        <a href="{{ url_for('disease.disease_detect_page') }}?lang={{ current_lang }}" class="btn btn-premium-secondary">
+                            <i class="bi bi-camera text-success"></i>
+                            <span data-i18n="hero_cta_image">{{ t('hero_cta_image') }}</span>
+                        </a>
+                        <a href="{{ url_for('advisory.advisory_page') }}?lang={{ current_lang }}" class="btn btn-outline-light rounded-3 px-3 py-2 fw-semibold d-inline-flex align-items-center gap-2">
+                            <i class="bi bi-flower1"></i>
+                            <span data-i18n="hero_cta_advisory">{{ t('hero_cta_advisory') }}</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 d-none d-lg-block">
+                    <!-- Glassmorphism Visual Preview Card -->
+                    <div class="p-4 rounded-4 shadow" style="background: rgba(255, 255, 255, 0.12); backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.22);">
+                        <div class="d-flex justify-content-between align-items-center mb-3 text-white-50 small border-bottom border-white border-opacity-10 pb-2">
+                            <span><i class="bi bi-shield-check text-success me-1"></i> <span data-i18n="nlp_live_tag">{{ t('nlp_live_tag') }}</span></span>
+                            <span data-i18n="lang_bilingual_label">{{ t('lang_bilingual_label') }}</span>
+                        </div>
+                        <div class="p-3 bg-black bg-opacity-25 rounded-3 mb-3 border border-white border-opacity-10">
+                            <div class="small text-white-50 mb-1"><i class="bi bi-mic text-danger me-1"></i> <span data-i18n="farmer_voice_label">{{ t('farmer_voice_label') }}</span></div>
+                            <div class="fw-semibold text-white fst-italic small" data-i18n="preview_voice_sample">{{ t('preview_voice_sample') }}</div>
+                        </div>
+                        <div class="d-flex align-items-center gap-3 p-3 bg-white bg-opacity-10 rounded-3 border border-white border-opacity-10">
+                            <div class="fs-2">🌿</div>
+                            <div>
+                                <div class="text-white-50" style="font-size: 0.72rem;" data-i18n="diagnosis_result_label">{{ t('diagnosis_result_label') }}</div>
+                                <div class="fw-bold text-white fs-6" data-i18n="preview_diag_title">{{ t('preview_diag_title') }}</div>
+                                <div class="text-white-50" style="font-size: 0.72rem;" data-i18n="preview_spray_sample">{{ t('preview_spray_sample') }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. Actual Live Metrics Cards -->
+        <div class="row g-3 mb-4">
+            <div class="col-sm-6 col-xl-3">
+                <div class="card-stat-modern h-100">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <div class="stat-label" data-i18n="dash_stat_total_pred">{{ t('dash_stat_total_pred') }}</div>
+                            <div class="stat-value">{{ summary.total_predictions }}</div>
+                            <div class="small text-muted"><i class="bi bi-database text-success me-1"></i> <span data-i18n="stat_db_verified">{{ t('stat_db_verified') }}</span></div>
+                        </div>
+                        <div class="stat-icon-wrapper"><i class="bi bi-check2-circle"></i></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-xl-3">
+                <div class="card-stat-modern h-100">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <div class="stat-label" data-i18n="dash_stat_advisories">{{ t('dash_stat_advisories') }}</div>
+                            <div class="stat-value">{{ summary.total_advisories }}</div>
+                            <div class="small text-muted"><i class="bi bi-chat-left-text text-success me-1"></i> <span data-i18n="stat_expert_answers">{{ t('stat_expert_answers') }}</span></div>
+                        </div>
+                        <div class="stat-icon-wrapper"><i class="bi bi-chat-dots"></i></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-xl-3">
+                <div class="card-stat-modern h-100">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <div class="stat-label" data-i18n="dash_stat_voice">{{ t('dash_stat_voice') }}</div>
+                            <div class="stat-value">{{ summary.voice_queries }}</div>
+                            <div class="small text-muted"><i class="bi bi-mic text-danger me-1"></i> <span data-i18n="stat_voice_inquiries">{{ t('stat_voice_inquiries') }}</span></div>
+                        </div>
+                        <div class="stat-icon-wrapper" style="background-color: #fee2e2; color: #dc2626;"><i class="bi bi-mic"></i></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-xl-3">
+                <div class="card-stat-modern h-100">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <div class="stat-label" data-i18n="dash_stat_active_classes">{{ t('dash_stat_active_classes') }}</div>
+                            <div class="stat-value">23</div>
+                            <div class="small text-muted"><i class="bi bi-flower2 text-success me-1"></i> <span data-i18n="stat_active_pathogens">{{ t('stat_active_pathogens') }}</span></div>
+                        </div>
+                        <div class="stat-icon-wrapper" style="background-color: var(--c-sand-100); color: var(--c-forest-800);"><i class="bi bi-flower2"></i></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. Core Modules Grid -->
+        <div class="mb-5">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h4 class="fw-bold text-dark mb-0" data-i18n="features_heading">{{ t('features_heading') }}</h4>
+                <a href="{{ url_for('main.dashboard') }}?lang={{ current_lang }}" class="small fw-semibold text-success text-decoration-none"><span data-i18n="dash_view_all_dash">{{ t('dash_view_all_dash') }}</span> <i class="bi bi-arrow-right"></i></a>
+            </div>
+
+            <div class="row g-3">
+                <div class="col-md-6 col-xl-3">
+                    <div class="card-modern h-100 d-flex flex-column">
+                        <div class="stat-icon-wrapper mb-3"><i class="bi bi-cpu"></i></div>
+                        <h6 class="fw-bold text-dark mb-2" data-i18n="feat_nlp_title">{{ t('feat_nlp_title') }}</h6>
+                        <p class="small text-muted mb-3 flex-grow-1" data-i18n="feat_nlp_desc">
+                            {{ t('feat_nlp_desc') }}
+                        </p>
+                        <a href="{{ url_for('disease.predict_page') }}?lang={{ current_lang }}" class="small fw-bold text-success text-decoration-none">
+                            <span data-i18n="feat_try_diagnosis">{{ t('feat_try_diagnosis') }}</span> <i class="bi bi-arrow-right ms-1"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-xl-3">
+                    <div class="card-modern h-100 d-flex flex-column">
+                        <div class="stat-icon-wrapper mb-3" style="background-color: #fee2e2; color: #dc2626;"><i class="bi bi-mic"></i></div>
+                        <h6 class="fw-bold text-dark mb-2" data-i18n="feat_voice_title">{{ t('feat_voice_title') }}</h6>
+                        <p class="small text-muted mb-3 flex-grow-1" data-i18n="feat_voice_desc">
+                            {{ t('feat_voice_desc') }}
+                        </p>
+                        <a href="{{ url_for('disease.predict_page') }}?lang={{ current_lang }}" class="small fw-bold text-success text-decoration-none">
+                            <span data-i18n="feat_speak_now">{{ t('feat_speak_now') }}</span> <i class="bi bi-arrow-right ms-1"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-xl-3">
+                    <div class="card-modern h-100 d-flex flex-column">
+                        <div class="stat-icon-wrapper mb-3"><i class="bi bi-flower1"></i></div>
+                        <h6 class="fw-bold text-dark mb-2" data-i18n="feat_advisory_title">{{ t('feat_advisory_title') }}</h6>
+                        <p class="small text-muted mb-3 flex-grow-1" data-i18n="feat_advisory_desc">
+                            {{ t('feat_advisory_desc') }}
+                        </p>
+                        <a href="{{ url_for('advisory.advisory_page') }}?lang={{ current_lang }}" class="small fw-bold text-success text-decoration-none">
+                            <span data-i18n="feat_ask_question">{{ t('feat_ask_question') }}</span> <i class="bi bi-arrow-right ms-1"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-xl-3">
+                    <div class="card-modern h-100 d-flex flex-column">
+                        <div class="stat-icon-wrapper mb-3" style="background-color: var(--c-sand-100); color: var(--c-forest-800);"><i class="bi bi-cloud-sun"></i></div>
+                        <h6 class="fw-bold text-dark mb-2" data-i18n="feat_weather_title">{{ t('feat_weather_title') }}</h6>
+                        <p class="small text-muted mb-3 flex-grow-1" data-i18n="feat_weather_desc">
+                            {{ t('feat_weather_desc') }}
+                        </p>
+                        <a href="{{ url_for('main.weather') }}?lang={{ current_lang }}" class="small fw-bold text-success text-decoration-none">
+                            <span data-i18n="feat_view_weather">{{ t('feat_view_weather') }}</span> <i class="bi bi-arrow-right ms-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. Three Simple Steps (How It Works) -->
+        <div class="card-modern p-4 p-md-5 mb-5 text-center">
+            <h4 class="fw-bold text-dark mb-2" data-i18n="how_heading">{{ t('how_heading') }}</h4>
+            <p class="text-muted small col-md-8 mx-auto mb-5" data-i18n="how_subheading">
+                {{ t('how_subheading') }}
+            </p>
+
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="p-3">
+                        <div class="bg-success text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3 shadow" style="width: 54px; height: 54px; font-weight: 800; font-size: 1.3rem;">
+                            1
+                        </div>
+                        <h6 class="fw-bold text-dark mb-2" data-i18n="step1_title">{{ t('step1_title') }}</h6>
+                        <p class="small text-muted mb-0" data-i18n="step1_desc">
+                            {{ t('step1_desc') }}
+                        </p>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="p-3">
+                        <div class="bg-success text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3 shadow" style="width: 54px; height: 54px; font-weight: 800; font-size: 1.3rem;">
+                            2
+                        </div>
+                        <h6 class="fw-bold text-dark mb-2" data-i18n="step2_title">{{ t('step2_title') }}</h6>
+                        <p class="small text-muted mb-0" data-i18n="step2_desc">
+                            {{ t('step2_desc') }}
+                        </p>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="p-3">
+                        <div class="bg-success text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3 shadow" style="width: 54px; height: 54px; font-weight: 800; font-size: 1.3rem;">
+                            3
+                        </div>
+                        <h6 class="fw-bold text-dark mb-2" data-i18n="step3_title">{{ t('step3_title') }}</h6>
+                        <p class="small text-muted mb-0" data-i18n="step3_desc">
+                            {{ t('step3_desc') }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. CTA Banner -->
+        <div class="p-4 p-md-5 text-white rounded-4 shadow mb-5 text-center" style="background: linear-gradient(135deg, var(--c-forest-950) 0%, var(--c-forest-800) 100%);">
+            <h3 class="fw-bold mb-2" data-i18n="cta_banner_title">{{ t('cta_banner_title') }}</h3>
+            <p class="text-white-50 mb-4" data-i18n="cta_banner_subtitle">{{ t('cta_banner_subtitle') }}</p>
+            <div class="d-flex justify-content-center flex-wrap gap-3">
+                <a href="{{ url_for('disease.predict_page') }}" class="btn btn-warning btn-lg px-4 fw-bold text-dark rounded-3 shadow">
+                    <i class="bi bi-chat-square-text-fill me-1"></i> <span data-i18n="hero_cta_predict">{{ t('hero_cta_predict') }}</span>
+                </a>
+                <a href="{{ url_for('main.dashboard') }}" class="btn btn-outline-light btn-lg px-4 rounded-3">
+                    <i class="bi bi-speedometer2 me-1"></i> <span data-i18n="nav_dashboard">{{ t('nav_dashboard') }}</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

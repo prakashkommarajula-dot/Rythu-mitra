@@ -1,0 +1,178 @@
+{% extends "base.html" %}
+
+{% block title %}Image Disease Detection Workspace | RYTHU MITHRA{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-xl-11">
+        <!-- Header Banner -->
+        <div class="card-modern mb-4 p-4 p-md-5 border-0 shadow-sm" style="background: linear-gradient(135deg, var(--c-forest-900) 0%, var(--c-forest-700) 100%); color: #ffffff;">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+                <div>
+                    <div class="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill mb-2" style="background: rgba(255,255,255,0.15); font-size: 0.8rem; color: var(--c-emerald-300);">
+                        <i class="bi bi-camera-fill"></i> <span data-i18n="img_badge_cv">{{ t('img_badge_cv', 'Computer Vision Diagnostics') }}</span>
+                    </div>
+                    <h2 class="fw-bold text-white mb-2" data-i18n="img_title">
+                        {{ t('img_title') }}
+                    </h2>
+                    <p class="text-white-50 mb-0 small" data-i18n="img_subtitle">
+                        {{ t('img_subtitle') }}
+                    </p>
+                </div>
+                <div>
+                    <span class="badge bg-white text-success px-3 py-2 rounded-pill fw-bold shadow-sm" data-i18n="img_badge_tensor">
+                        <i class="bi bi-eye-fill me-1"></i> {{ t('img_badge_tensor') }}
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Vision Architecture Notice Card -->
+        <div id="modelNoticeCard" class="card-modern p-4 mb-4 border-info shadow-sm" style="background-color: #f0f9ff; border-left: 5px solid #0284c7;">
+            <div class="d-flex align-items-start gap-3">
+                <i class="bi bi-info-circle-fill fs-3 text-info"></i>
+                <div>
+                    <h6 class="fw-bold text-dark mb-1" data-i18n="img_notice_title">{{ t('img_notice_title') }}</h6>
+                    <p id="modelNoticeMessage" class="small text-muted mb-2" data-i18n="img_notice_desc">
+                        {{ t('img_notice_desc') }}
+                    </p>
+                    <a href="{{ url_for('disease.predict_page') }}" class="btn btn-sm btn-outline-primary rounded-pill px-3">
+                        <i class="bi bi-chat-square-text me-1"></i> <span data-i18n="img_btn_nlp_fallback">{{ t('img_btn_nlp_fallback') }}</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Image Upload Form Card -->
+        <div class="card-modern p-4 p-md-5 mb-4">
+            <form id="diseaseForm" enctype="multipart/form-data">
+                <div id="dropZone" class="upload-dropzone-modern mb-3">
+                    <div class="empty-icon-circle mb-3" style="width: 72px; height: 72px;">
+                        <i class="bi bi-cloud-arrow-up display-4 text-success"></i>
+                    </div>
+                    <h5 class="fw-bold text-dark mb-1" data-i18n="img_dropzone_title">
+                        {{ t('img_dropzone_title') }}
+                    </h5>
+                    <p class="text-muted small mb-4" data-i18n="img_formats">
+                        {{ t('img_formats') }}
+                    </p>
+
+                    <input type="file" id="imageInput" name="file" accept="image/*" class="d-none">
+                    
+                    <div class="d-flex justify-content-center flex-wrap gap-3">
+                        <button type="button" class="btn btn-premium-primary px-4 py-2" onclick="document.getElementById('imageInput').click()">
+                            <i class="bi bi-folder2-open me-1"></i> <span data-i18n="img_btn_browse">{{ t('img_btn_browse') }}</span>
+                        </button>
+                        <button type="button" class="btn btn-premium-secondary px-4 py-2" onclick="document.getElementById('cameraInput').click()">
+                            <i class="bi bi-camera me-1"></i> <span data-i18n="img_btn_camera">{{ t('img_btn_camera') }}</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Hidden Camera Capture Input -->
+                <input type="file" id="cameraInput" accept="image/*" capture="environment" class="d-none">
+
+                <!-- Image Preview Container -->
+                <div id="previewContainer" class="d-none mb-4 text-center">
+                    <div class="position-relative d-inline-block">
+                        <img id="imagePreview" src="#" alt="Leaf Preview" class="img-fluid rounded-4 shadow-sm border" style="max-height: 320px; object-fit: contain;">
+                        <button type="button" id="removeImageBtn" class="btn btn-sm btn-danger position-absolute top-0 end-0 m-2 rounded-circle" title="Remove image">
+                            <i class="bi bi-x-lg"></i>
+                        </button>
+                    </div>
+                    <div id="fileInfo" class="small text-muted mt-2 fw-semibold"></div>
+                </div>
+
+                <!-- Action Button -->
+                <div class="text-center pt-2">
+                    <button type="submit" id="analyzeBtn" class="btn btn-premium-primary btn-lg px-5 shadow" disabled>
+                        <span id="btnSpinner" class="spinner-border spinner-border-sm me-2 d-none" role="status"></span>
+                        <span id="btnText"><i class="bi bi-search me-1"></i> <span data-i18n="img_btn_analyze">{{ t('img_btn_analyze') }}</span></span>
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Diagnostic Report Section -->
+        <div id="resultCard" class="result-card-elevated d-none mb-5">
+            <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-4">
+                <div class="d-flex align-items-center gap-2">
+                    <i class="bi bi-clipboard2-pulse-fill text-success fs-3"></i>
+                    <h4 class="fw-bold text-dark mb-0" data-i18n="img_report_heading">{{ t('img_report_heading') }}</h4>
+                </div>
+                <span id="severityBadge" class="badge bg-warning text-dark px-3 py-2 rounded-pill fw-bold" data-i18n="img_severity_moderate">{{ t('img_severity_moderate') }}</span>
+            </div>
+
+            <div class="row g-4 align-items-center mb-4">
+                <div class="col-md-4 text-center">
+                    <img id="resultImage" src="#" alt="Analyzed Leaf" class="img-fluid rounded-3 border shadow-sm" style="max-height: 190px;">
+                </div>
+                <div class="col-md-8">
+                    <div class="small text-muted fw-bold text-uppercase" data-i18n="img_identified_heading">{{ t('img_identified_heading') }}</div>
+                    <h3 id="detectedCropDisease" class="fw-bold text-success mb-2">--</h3>
+                    <div class="d-flex gap-2 mb-3">
+                        <span id="teluguName" class="badge bg-light text-dark border">--</span>
+                        <span id="hindiName" class="badge bg-light text-dark border">--</span>
+                    </div>
+
+                    <div class="p-3 bg-white rounded-3 border">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <span class="small fw-semibold text-muted" data-i18n="img_model_conf">{{ t('img_model_conf') }}</span>
+                            <span id="confidenceText" class="fs-5 fw-bold text-success">--%</span>
+                        </div>
+                        <div class="progress-track-modern">
+                            <div id="confidenceBar" class="progress-bar-modern" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <hr>
+
+            <!-- Detailed Remedies Cards -->
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <div class="p-3 bg-white rounded-3 h-100 border">
+                        <div class="small fw-bold text-dark mb-1"><i class="bi bi-eye text-primary me-1"></i> <span data-i18n="img_card_symptoms">Symptoms:</span></div>
+                        <div id="symptomsText" class="small text-muted">--</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="p-3 bg-white rounded-3 h-100 border">
+                        <div class="small fw-bold text-dark mb-1"><i class="bi bi-flower2 text-success me-1"></i> <span data-i18n="img_card_organic">Organic Remedies:</span></div>
+                        <div id="organicText" class="small text-muted">--</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="p-3 bg-white rounded-3 h-100 border">
+                        <div class="small fw-bold text-dark mb-1"><i class="bi bi-prescription2 text-danger me-1"></i> <span data-i18n="img_card_chemical">Chemical Treatment:</span></div>
+                        <div id="chemicalText" class="small text-muted">--</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/disease_detect.js') }}"></script>
+<script>
+document.getElementById('cameraInput')?.addEventListener('change', function(e) {
+    if (e.target.files && e.target.files[0]) {
+        const file = e.target.files[0];
+        const preview = document.getElementById('imagePreview');
+        const previewCont = document.getElementById('previewContainer');
+        const dropZone = document.getElementById('dropZone');
+        const analyzeBtn = document.getElementById('analyzeBtn');
+        const fileInfo = document.getElementById('fileInfo');
+
+        preview.src = URL.createObjectURL(file);
+        previewCont.classList.remove('d-none');
+        dropZone.classList.add('d-none');
+        analyzeBtn.disabled = false;
+        fileInfo.textContent = `${file.name} (${(file.size / (1024*1024)).toFixed(2)} MB)`;
+    }
+});
+</script>
+{% endblock %}

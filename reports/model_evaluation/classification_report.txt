@@ -1,0 +1,29 @@
+                          precision    recall  f1-score   support
+
+          Bacterial Wilt       1.00      1.00      1.00         4
+                   Blast       1.00      1.00      1.00         2
+       Brown Planthopper       1.00      1.00      1.00         4
+            Early Blight       0.80      1.00      0.89         4
+           Fall Armyworm       1.00      1.00      1.00         5
+             Fruit Borer       0.90      1.00      0.95         9
+   Fruit and Shoot Borer       1.00      0.67      0.80         3
+           Fusarium Wilt       0.86      1.00      0.92         6
+              Grain Mold       1.00      1.00      1.00         6
+             Leaf Blotch       1.00      1.00      1.00         3
+         Leaf Curl Virus       1.00      1.00      1.00         6
+              Leaf Miner       1.00      0.67      0.80         3
+           Pink Bollworm       1.00      1.00      1.00         5
+               Pod Borer       1.00      1.00      1.00         8
+          Powdery Mildew       1.00      1.00      1.00         3
+             Rhizome Rot       1.00      0.67      0.80         3
+               Shoot Fly       1.00      1.00      1.00         5
+                  Thrips       1.00      1.00      1.00         5
+         Tikka Leaf Spot       0.80      1.00      0.89         4
+    Turcicum Leaf Blight       1.00      0.75      0.86         4
+                Whitefly       1.00      1.00      1.00         7
+     Yellow Mosaic Virus       1.00      1.00      1.00         3
+Yellow Vein Mosaic Virus       1.00      1.00      1.00         2
+
+                accuracy                           0.96       104
+               macro avg       0.97      0.95      0.95       104
+            weighted avg       0.97      0.96      0.96       104

@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block title %}Farmer Portal Login | RYTHU MITHRA{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center my-4">
+    <div class="col-lg-10 col-xl-9">
+        <div class="card-modern p-0 overflow-hidden shadow-lg border-0">
+            <div class="row g-0">
+                <!-- Left Hero Visual Side -->
+                <div class="col-md-5 p-5 text-white d-flex flex-column justify-content-between" style="background: linear-gradient(145deg, var(--c-forest-950) 0%, var(--c-forest-800) 60%, var(--c-forest-700) 100%);">
+                    <div>
+                        <div class="brand-badge mb-3">🌾</div>
+                        <h3 class="fw-bold text-white mb-2" data-i18n="app_name">{{ t('app_name') }}</h3>
+                        <p class="text-white-50 small mb-4" data-i18n="app_tagline">{{ t('app_tagline') }}</p>
+                        
+                        <div class="p-3 rounded-4 mb-3" style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);">
+                            <div class="small fw-bold text-success-emphasis mb-1" data-i18n="auth_left_title">{{ t('auth_left_title') }}</div>
+                            <p class="small text-white-50 mb-0" data-i18n="auth_left_desc">
+                                {{ t('auth_left_desc') }}
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="small text-white-50">
+                        <i class="bi bi-shield-check text-success me-1"></i> <span data-i18n="auth_security_badge">{{ t('auth_security_badge') }}</span>
+                    </div>
+                </div>
+
+                <!-- Right Form Side -->
+                <div class="col-md-7 p-4 p-md-5 bg-white">
+                    <div class="mb-4">
+                        <h3 class="fw-bold text-dark mb-1" data-i18n="auth_login_title">{{ t('auth_login_title') }}</h3>
+                        <p class="text-muted small" data-i18n="auth_login_subtitle">
+                            {{ t('auth_login_subtitle') }}
+                        </p>
+                    </div>
+
+                    <form method="POST" action="{{ url_for('main.login', next=next) }}">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <div class="mb-3">
+                            <label for="phone_or_email" class="form-label-modern" data-i18n="auth_field_identifier">
+                                {{ t('auth_field_identifier') }}
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light text-muted border-end-0"><i class="bi bi-person"></i></span>
+                                <input type="text" class="form-control-modern border-start-0" id="phone_or_email" name="phone_or_email" value="{{ identifier or '' }}" placeholder="{{ t('auth_field_identifier_placeholder') }}" data-i18n-placeholder="auth_field_identifier_placeholder" required autofocus>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="password" class="form-label-modern" data-i18n="auth_field_password">
+                                {{ t('auth_field_password') }}
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light text-muted border-end-0"><i class="bi bi-lock"></i></span>
+                                <input type="password" class="form-control-modern border-start-0 border-end-0" id="password" name="password" placeholder="{{ t('auth_field_password_placeholder') }}" data-i18n-placeholder="auth_field_password_placeholder" required>
+                                <button type="button" class="btn btn-outline-secondary border-start-0" onclick="togglePasswordVisibility('password', 'togglePasswordIcon')">
+                                    <i id="togglePasswordIcon" class="bi bi-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-premium-primary w-100 py-3 mb-3 fw-bold justify-content-center">
+                            <i class="bi bi-box-arrow-in-right me-1"></i> <span data-i18n="auth_btn_login">{{ t('auth_btn_login') }}</span>
+                        </button>
+
+                        <div class="text-center small text-muted">
+                            <span data-i18n="auth_no_account">{{ t('auth_no_account') }}</span>
+                            <a href="{{ url_for('main.register') }}" class="text-success fw-bold text-decoration-none ms-1" data-i18n="nav_register">
+                                {{ t('nav_register') }}
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

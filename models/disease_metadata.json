@@ -1,0 +1,213 @@
+{
+  "classes": [
+    "Rice_Blast",
+    "Rice_Brown_Spot",
+    "Cotton_Leaf_Curl",
+    "Cotton_Bacterial_Blight",
+    "Tomato_Early_Blight",
+    "Tomato_Late_Blight",
+    "Potato_Late_Blight",
+    "Maize_Common_Rust",
+    "Healthy_Crop"
+  ],
+  "metadata": {
+    "Rice_Blast": {
+      "crop": "Rice (వరి / धान)",
+      "disease": "Blast (Magnaporthe oryzae)",
+      "telugu_name": "వరి అగ్గి తెగులు",
+      "hindi_name": "धान का झुलसा रोग",
+      "symptoms": {
+        "en": "Spindle-shaped lesions with brown or reddish-brown borders and greyish-white centres appearing on leaves and neck nodes.",
+        "te": "ఆకులపై కండె ఆకారపు మచ్చలు ఏర్పడి, మధ్యలో బూడిద రంగు మరియు అంచులు ఎరుపు-గోధుమ రంగులో ఉంటాయి.",
+        "hi": "पत्तियों पर आंख या धुरी के आकार के धब्बे बनते हैं, जिनके किनारे भूरे और केंद्र भूरे-सफेद होते हैं।"
+      },
+      "organic_remedies": {
+        "en": "Apply Pseudomonas fluorescens @ 10g/L or spray 5% neem seed kernel extract (NSKE). Avoid excessive nitrogen fertilizer.",
+        "te": "లీటరు నీటికి సూడోమోనాస్ ఫ్లోరోసెన్స్ 10 గ్రాములు లేదా 5% వేప గింజల కషాయం పిచికారీ చేయండి. అధిక నత్రజని వాడకం తగ్గించండి.",
+        "hi": "स्यूडोमोनास फ्लोरोसेंस 10 ग्राम/लीटर का छिड़काव करें या 5% नीम के बीज का काढ़ा प्रयोग करें। नाइट्रोजन की अधिकता से बचें।"
+      },
+      "chemical_treatment": {
+        "en": "Spray Tricyclazole 75% WP @ 0.6g/L or Isoprothiolane 40% EC @ 1.5ml/L at early infection stages.",
+        "te": "ట్రైసైక్లాజోల్ 75% WP లీటరు నీటికి 0.6 గ్రా. లేదా ఐసోప్రోథియోలేన్ 40% EC 1.5 మి.లీ. పిచికారీ చేయండి.",
+        "hi": "ट्राइसाइक्लाजोल 75% WP 0.6 ग्राम/लीटर या आइसोप्रोपियोलेन 40% EC 1.5 मिली/लीटर का छिड़काव करें।"
+      },
+      "severity": "High"
+    },
+    "Rice_Brown_Spot": {
+      "crop": "Rice (వరి / धान)",
+      "disease": "Brown Spot (Bipolaris oryzae)",
+      "telugu_name": "వరి ఎండి తెగులు / గోధుమ రంగు మచ్చ తెగులు",
+      "hindi_name": "धान का भूरा धब्बा रोग",
+      "symptoms": {
+        "en": "Oval to circular brown spots with a yellow halo uniformly distributed over the leaf blades.",
+        "te": "ఆకులపై గుండ్రని లేదా అండాకార గోధుమ రంగు మచ్చలు మరియు పసుపు రంగు వలయాలు కనిపిస్తాయి.",
+        "hi": "पत्तियों पर अंडाकार या गोल भूरे रंग के धब्बे दिखते हैं जिनके चारों ओर पीला घेरा होता है।"
+      },
+      "organic_remedies": {
+        "en": "Balanced application of potash. Seed treatment with Trichoderma viride @ 5g/kg seed.",
+        "te": "పొటాష్ ఎరువు సమపాళ్లలో వాడాలి. ట్రైకోడెర్మా విరిడే కిలోకి 5 గ్రాముల చొప్పున విత్తన శుద్ధి చేయండి.",
+        "hi": "पोटाश का संतुलित उपयोग करें। ट्राइकोडर्मा विरिडी 5 ग्राम प्रति किलो बीज से उपचारित करें।"
+      },
+      "chemical_treatment": {
+        "en": "Spray Mancozeb 75% WP @ 2g/L or Propiconazole 25% EC @ 1ml/L.",
+        "te": "మాంకోజెబ్ 75% WP లీటరు నీటికి 2 గ్రా. లేదా ప్రొపికోనాజోల్ 25% EC 1 మి.లీ. పిచికారీ చేయండి.",
+        "hi": "मैंकोजेब 75% WP 2 ग्राम/लीटर या प्रोपिकोनाजोल 25% EC 1 मिली/लीटर का छिड़काव करें।"
+      },
+      "severity": "Moderate"
+    },
+    "Cotton_Leaf_Curl": {
+      "crop": "Cotton (ప్రత్తి / कपास)",
+      "disease": "Cotton Leaf Curl Virus (CLCuV)",
+      "telugu_name": "ప్రత్తి ఆకు ముడత తెగులు",
+      "hindi_name": "कपास का पत्ती मरोड़ रोग",
+      "symptoms": {
+        "en": "Upward or downward curling of leaf margins, vein thickening, and enation on the lower leaf surface.",
+        "te": "ఆకులు పైకి లేదా కిందికి ముడుచుకుపోవడం, ఈనెలు లావెక్కడం మరియు ఆకుల అడుగున చిన్న పిలకలు రావడం.",
+        "hi": "पत्तियों के किनारे ऊपर या नीचे मुड़ जाते हैं, नसें मोटी हो जाती हैं और पत्ती की निचली सतह पर उभार आता है।"
+      },
+      "organic_remedies": {
+        "en": "Control whitefly vector using yellow sticky traps (15-20 traps/acre) and 5% neem oil spray.",
+        "te": "తెల్లదోమ నివారణకు ఎకరాకు 15-20 పసుపు రంగు జిగురు అట్టలను ఏర్పాటు చేయండి. 5% వేపనూనె పిచికారీ చేయండి.",
+        "hi": "सफेद मक्खी नियंत्रण के लिए पीले चिपचिपे कार्ड लगाएं और 5% नीम तेल का छिड़काव करें।"
+      },
+      "chemical_treatment": {
+        "en": "To control vector whiteflies: Spray Diafenthiuron 50% WP @ 1.25g/L or Flonicamid 50% WG @ 0.3g/L.",
+        "te": "తెల్లదోమ నివారణకు డయాఫెంథియురాన్ 50% WP లీటరుకు 1.25 గ్రా. లేదా ఫ్లోనికామిడ్ 0.3 గ్రా. పిచికారీ చేయండి.",
+        "hi": "सफेद मक्खी नियंत्रण: डायफेन्थियूरॉन 50% WP 1.25 ग्राम/लीटर या फ्लोनिकामाइड 50% WG 0.3 ग्राम/लीटर।"
+      },
+      "severity": "High"
+    },
+    "Cotton_Bacterial_Blight": {
+      "crop": "Cotton (ప్రత్తి / कपास)",
+      "disease": "Bacterial Blight (Xanthomonas citri pv. malvacearum)",
+      "telugu_name": "ప్రత్తి బ్యాక్టీరియా ఆకుమచ్చ తెగులు",
+      "hindi_name": "कपास का जीवाणु झुलसा रोग",
+      "symptoms": {
+        "en": "Angular water-soaked spots bounded by leaf veins, later turning dark brown to black.",
+        "te": "ఆకుల ఈనెల మధ్య కోణాకార తడి మచ్చలు ఏర్పడి క్రమంగా నలుపు లేదా ముదురు గోధుమ రంగులోకి మారుతాయి.",
+        "hi": "पत्तियों की नसों के बीच कोणीय पानी से भीगे धब्बे जो बाद में गहरे भूरे या काले हो जाते हैं।"
+      },
+      "organic_remedies": {
+        "en": "Field sanitation, removing infected crop residues, and spraying fermented butter milk solution.",
+        "te": "తెగులు సోకిన ఆకులను ఏరి కాల్చివేయాలి. పులిసిన మజ్జిగ ద్రావణం పిచికారీ చేయడం మంచిది.",
+        "hi": "संक्रमित फसल अवशेषों को हटाकर नष्ट करें। खट्टी छाछ के घोल का छिड़काव करें।"
+      },
+      "chemical_treatment": {
+        "en": "Spray Copper Oxychloride 50% WP @ 3g/L mixed with Streptocycline @ 0.1g/L.",
+        "te": "కాపర్ ఆక్సిక్లోరైడ్ 3 గ్రా. మరియు స్ట్రెప్టోసైక్లిన్ 0.1 గ్రా. లీటరు నీటికి కలిపి పిచికారీ చేయండి.",
+        "hi": "कॉपर ऑक्सीक्लोराइड 3 ग्राम/लीटर में स्ट्रेप्टोसाइक्लिन 0.1 ग्राम/लीटर मिलाकर छिड़कें।"
+      },
+      "severity": "High"
+    },
+    "Tomato_Early_Blight": {
+      "crop": "Tomato (టమాటో / टमाटर)",
+      "disease": "Early Blight (Alternaria solani)",
+      "telugu_name": "టమాట ఆకుమాడు తెగులు",
+      "hindi_name": "टमाटर का अगेती झुलसा रोग",
+      "symptoms": {
+        "en": "Concentric rings ('target board' pattern) on older lower leaves progressing upwards.",
+        "te": "కింది ముదిరిన ఆకులపై గుండ్రటి వలయాల వంటి ('టార్గెట్ బోర్డ్') ముదురు గోధుమ రంగు మచ్చలు వస్తాయి.",
+        "hi": "निचली पत्तियों पर संकेंद्रित छल्लों (टारगेट बोर्ड) वाले भूरे-काले धब्बे बनते हैं।"
+      },
+      "organic_remedies": {
+        "en": "Prune lower infected leaves. Apply mulch to prevent soil-splash pathogens. Spray Trichoderma harzianum.",
+        "te": "కింది ఆకులను కత్తిరించి తీసివేయండి. నేల నుంచి నీటి తుంపర్లు పడకుండా మల్చింగ్ చేయండి.",
+        "hi": "संक्रमित निचली पत्तियों को काटें। मिट्टी के छींटों से बचाव के लिए मल्चिंग करें।"
+      },
+      "chemical_treatment": {
+        "en": "Spray Chlorothalonil 75% WP @ 2g/L or Mancozeb 75% WP @ 2.5g/L.",
+        "te": "క్లోరోథలోనిల్ 75% WP లీటరు నీటికి 2 గ్రా. లేదా మాంకోజెబ్ 2.5 గ్రా. పిచికారీ చేయండి.",
+        "hi": "क्लोरोथालोनिल 75% WP 2 ग्राम/लीटर या मैंकोजेब 2.5 ग्राम/लीटर का छिड़काव करें।"
+      },
+      "severity": "Moderate"
+    },
+    "Tomato_Late_Blight": {
+      "crop": "Tomato (టమాటో / टमाटर)",
+      "disease": "Late Blight (Phytophthora infestans)",
+      "telugu_name": "టమాట లేట్ బ్లైట్ (మొగి తెగులు)",
+      "hindi_name": "टमाटर का पछेती झुलसा रोग",
+      "symptoms": {
+        "en": "Large irregular greenish-black water-soaked patches on leaves with white fungal growth underneath in humid weather.",
+        "te": "తేమ వాతావరణంలో ఆకులపై నల్లటి నీటి మచ్చలు మరియు ఆకుల అడుగున బూజు లాంటి తెల్లటి పెరుగుదల.",
+        "hi": "पत्तियों पर बड़े अनियमित काले-हरे धब्बे और पत्तियों के नीचे सफेद फफूंद दिखाई देती है।"
+      },
+      "organic_remedies": {
+        "en": "Maintain plant spacing for aeration. Avoid overhead irrigation during cold, damp periods.",
+        "te": "మొక్కల మధ్య సరైన గాలి వెలుతురు ఉండేలా దూరం పాటించండి. చలి కాలంలో పైనుండి నీరు పోయరాదు.",
+        "hi": "हवा के संचार के लिए पौधों के बीच पर्याप्त दूरी रखें। ऊपर से सिंचाई करने से बचें।"
+      },
+      "chemical_treatment": {
+        "en": "Spray Metalaxyl 8% + Mancozeb 64% WP @ 2g/L or Cymoxanil 8% + Mancozeb 64% WP @ 2g/L.",
+        "te": "మెటలాక్సిల్ 8% + మాంకోజెబ్ 64% WP లీటరుకు 2 గ్రా. పిచికారీ చేయండి.",
+        "hi": "मेटालैक्सिल 8% + मैंकोजेब 64% WP 2 ग्राम/लीटर का तुरंत छिड़काव करें।"
+      },
+      "severity": "Critical"
+    },
+    "Potato_Late_Blight": {
+      "crop": "Potato (బంగాళాదుంప / आलू)",
+      "disease": "Late Blight (Phytophthora infestans)",
+      "telugu_name": "బంగాళాదుంప లేట్ బ్లైట్ తెగులు",
+      "hindi_name": "आलू का पछेती झुलसा रोग",
+      "symptoms": {
+        "en": "Water-soaked dark lesions appearing on tips and edges of leaves quickly spreading through the canopy.",
+        "te": "ఆకుల చివర్ల నుండి నల్లటి మచ్చలు వేగంగా మొత్తం మొక్కకు విస్తరిస్తాయి.",
+        "hi": "पत्तियों के सिरों और किनारों पर पानी से भीगे गहरे धब्बे तेजी से फैलते हैं।"
+      },
+      "organic_remedies": {
+        "en": "Use certified disease-free tubers. Ensure ridge earthing-up to protect tubers from spore wash.",
+        "te": "ధృవీకరించబడిన విత్తన దుంపలను వాడండి. దుంపల పైకి మట్టిని ఎగదోయండి.",
+        "hi": "प्रमाणित रोगमुक्त कंदों का ही प्रयोग करें। कंदों को मिट्टी से अच्छी तरह ढंकें।"
+      },
+      "chemical_treatment": {
+        "en": "Preventative spray of Mancozeb @ 2.5g/L; Curative spray of Dimethomorph 50% WP @ 1g/L.",
+        "te": "ముందస్తుగా మాంకోజెబ్ 2.5 గ్రా/లీ; తెగులు గమనించినపుడు డైమెథోమార్ఫ్ 1 గ్రా/లీ పిచికారీ చేయండి.",
+        "hi": "बचाव के लिए मैंकोजेब 2.5 ग्राम/लीटर; बीमारी आने पर डाइमेथोमॉर्फ 1 ग्राम/लीटर छिड़कें।"
+      },
+      "severity": "Critical"
+    },
+    "Maize_Common_Rust": {
+      "crop": "Maize (మొక్కజొన్న / मक्का)",
+      "disease": "Common Rust (Puccinia sorghi)",
+      "telugu_name": "మొక్కజొన్న తుప్పు తెగులు",
+      "hindi_name": "मक्का का गेरुआ रोग",
+      "symptoms": {
+        "en": "Small powdery cinnamon-brown pustules appearing scattered on both upper and lower leaf surfaces.",
+        "te": "ఆకుల పై మరియు కింద భాగాన తుప్పు రంగు పొడి బొబ్బలు (కురుపులు) ఏర్పడతాయి.",
+        "hi": "पत्तियों की दोनों सतहों पर दालचीनी जैसे भूरे रंग के छोटे-छोटे दाने या छाले दिखाई देते हैं।"
+      },
+      "organic_remedies": {
+        "en": "Grow rust-resistant hybrid varieties. Practice crop rotation with non-host crops.",
+        "te": "తెగులును తట్టుకునే రకాలను ఎంచుకోండి. పంట మార్పిడి పద్ధతిని పాటించండి.",
+        "hi": "रोग प्रतिरोधी संकर किस्में लगाएं। फसलों का चक्रानुक्रम (क्रॉप रोटेशन) अपनाएं।"
+      },
+      "chemical_treatment": {
+        "en": "Spray Azoxystrobin 18.2% + Difenoconazole 11.4% SC @ 1ml/L or Mancozeb @ 2.5g/L.",
+        "te": "అజాక్సిస్ట్రోబిన్ + డైఫెనోకోనాజోల్ 1 మి.లీ/లీ లేదా మాంకోజెబ్ 2.5 గ్రా/లీ పిచికారీ చేయండి.",
+        "hi": "एज़ोक्सीस्ट्रोबिन + डिफेनोकोनाज़ोल 1 मिली/लीटर या मैंकोजेब 2.5 ग्राम/लीटर का छिड़काव करें।"
+      },
+      "severity": "Moderate"
+    },
+    "Healthy_Crop": {
+      "crop": "Crop Foliage",
+      "disease": "Healthy (No Disease Detected)",
+      "telugu_name": "ఆరోగ్యకరమైన పంట",
+      "hindi_name": "स्वस्थ फसल",
+      "symptoms": {
+        "en": "Uniform vibrant green leaf pigmentation with no visible fungal lesions, necrosis, or pest damage.",
+        "te": "ఆకులు ఆకుపచ్చగా ఆరోగ్యంగా ఉన్నాయి, ఎటువంటి తెగులు లేదా పురుగుల లక్షణాలు లేవు.",
+        "hi": "पत्तियां पूरी तरह हरी और स्वस्थ हैं, कोई रोग या कीट का प्रकोप नहीं है।"
+      },
+      "organic_remedies": {
+        "en": "Maintain regular monitoring and standard agronomic nutrient management.",
+        "te": "సమగ్ర పోషక యాజమాన్యం మరియు క్రమ తప్పకుండా తోట పరిశీలన కొనసాగించండి.",
+        "hi": "नियमित रूप से फसल की निगरानी और संतुलित खाद-पानी जारी रखें।"
+      },
+      "chemical_treatment": {
+        "en": "No chemical intervention needed at this stage.",
+        "te": "ప్రస్తుతానికి ఎటువంటి రసాయనాలు పిచికారీ చేయవలసిన అవసరం లేదు.",
+        "hi": "इस समय किसी रासायनिक कीटनाशक की आवश्यकता नहीं है।"
+      },
+      "severity": "None"
+    }
+  }
+}

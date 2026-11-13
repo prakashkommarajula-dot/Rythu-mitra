@@ -1,0 +1,648 @@
+{% extends "base.html" %}
+
+{% block title %}Smart Agricultural Advisory System | RYTHU MITHRA{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-xl-11">
+        <!-- 1. Header Banner -->
+        <div class="card-modern mb-4 p-4 p-md-5 border-0 shadow-sm" style="background: linear-gradient(135deg, var(--c-forest-900) 0%, var(--c-forest-700) 100%); color: #ffffff;">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+                <div>
+                    <div class="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill mb-2" style="background: rgba(255,255,255,0.15); font-size: 0.8rem; color: var(--c-emerald-300);">
+                        <i class="bi bi-book-half"></i> <span data-i18n="advisory_header_badge">{{ t('advisory_header_badge') }}</span>
+                    </div>
+                    <h2 class="fw-bold text-white mb-2" data-i18n="advisory_title">
+                        {{ t('advisory_title') }}
+                    </h2>
+                    <p class="text-white-50 mb-0 small" data-i18n="advisory_subtitle">
+                        {{ t('advisory_subtitle') }}
+                    </p>
+                </div>
+                <div class="d-flex flex-column align-items-md-end gap-2">
+                    <span class="badge bg-white text-success px-3 py-2 rounded-pill fw-bold shadow-sm">
+                        <i class="bi bi-check-circle-fill me-1"></i> <span data-i18n="advisory_badge_verified">{{ t('advisory_badge_verified') }}</span>
+                    </span>
+                    <span class="badge bg-light bg-opacity-25 text-white px-3 py-1 rounded-pill small" data-i18n="advisory_badge_classes">
+                        {{ t('advisory_badge_classes') }}
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        {% if not_found_message %}
+        <div class="alert alert-warning rounded-4 shadow-sm p-4 mb-4">
+            <div class="d-flex align-items-center gap-3">
+                <i class="bi bi-exclamation-triangle-fill fs-2 text-warning"></i>
+                <div>
+                    <h5 class="fw-bold mb-1" data-i18n="advisory_not_found_title">{{ t('advisory_not_found_title') }}</h5>
+                    <p class="mb-0 small text-muted">{{ not_found_message }}</p>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- 2. Active Advisory Display (When Deep-Linked from Prediction or Selected) -->
+        {% if advisory %}
+        <div id="verifiedAdvisoryContainer" class="mb-5">
+            <!-- Pathogen Overview Hero Card -->
+            <div class="card-modern border-0 shadow-lg p-4 p-md-5 mb-4 result-card-elevated">
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 border-bottom pb-4 mb-4">
+                    <div>
+                        <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
+                            <span class="badge bg-success-subtle text-success-emphasis border border-success-subtle px-3 py-1 rounded-pill fw-bold">
+                                {{ advisory.crop }} ({{ advisory.crop_local_name }})
+                            </span>
+                            <span class="badge {% if advisory.problem_type == 'Disease' %}bg-primary-subtle text-primary-emphasis{% elif advisory.problem_type == 'Pest' %}bg-danger-subtle text-danger-emphasis{% else %}bg-warning-subtle text-warning-emphasis{% endif %} px-3 py-1 rounded-pill fw-bold">
+                                {{ advisory.problem_type }}
+                            </span>
+                            <span class="badge bg-light text-dark border px-3 py-1 rounded-pill small">
+                                <i class="bi bi-geo-alt me-1 text-success"></i> {{ advisory.affected_plant_part }}
+                            </span>
+                        </div>
+
+                        <h2 class="fw-bold text-dark mb-1">
+                            {{ advisory.disease_or_pest }}
+                        </h2>
+                        {% if advisory.scientific_name %}
+                        <div class="fst-italic text-success fs-6 fw-semibold mb-2">
+                            <i class="bi bi-diagram-3 me-1"></i> <span data-i18n="advisory_scientific_name">{{ t('advisory_scientific_name') }}</span>: {{ advisory.scientific_name }}
+                        </div>
+                        {% endif %}
+
+                        <div class="d-flex align-items-center gap-2 text-muted small mt-2">
+                            <i class="bi bi-shield-check text-success"></i>
+                            <span><span data-i18n="advisory_source">{{ t('advisory_source') }}</span>: <strong>{{ advisory.source }}</strong></span>
+                        </div>
+                    </div>
+
+                    <!-- Right Controls: Severity Badge, Audio Read Aloud & Language Switcher -->
+                    <div class="d-flex flex-column align-items-md-end gap-3">
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="small fw-bold text-muted text-uppercase" data-i18n="advisory_severity_label">{{ t('advisory_severity_label') }}</span>
+                            <span class="badge {% if advisory.severity == 'High' or advisory.severity == 'Severe' %}bg-danger text-white{% elif advisory.severity == 'Medium' %}bg-warning text-dark{% else %}bg-success text-white{% endif %} px-3 py-2 rounded-pill fw-bold">
+                                {{ advisory.severity }}
+                            </span>
+                        </div>
+
+                        <div class="d-flex flex-wrap gap-2">
+                            <button type="button" class="btn btn-sm btn-outline-success rounded-pill px-3 py-2 fw-semibold" onclick="readAloudAdvisory()">
+                                <i class="bi bi-volume-up-fill me-1"></i> <span id="ttsBtnText" data-i18n="advisory_tts_listen">{{ t('advisory_tts_listen') }}</span>
+                            </button>
+                            <div class="btn-group" role="group">
+                                <button type="button" class="btn btn-sm {% if selected_lang == 'te' %}btn-success{% else %}btn-outline-success{% endif %}" onclick="switchAdvisoryLanguage('te')">తెలుగు</button>
+                                <button type="button" class="btn btn-sm {% if selected_lang == 'en' %}btn-success{% else %}btn-outline-success{% endif %}" onclick="switchAdvisoryLanguage('en')">English</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hidden Narratable Advisory Text for Web Speech API -->
+                <div id="narratableAdvisorySummary" class="d-none">
+                    {% if selected_lang == 'te' %}
+                    {{ advisory.disease_or_pest }}. {{ advisory.advisory_te }} సేంద్రీయ నివారణ: {{ advisory.organic_management }} రసాయన మందు: {{ advisory.chemical_control }}
+                    {% else %}
+                    {{ advisory.disease_or_pest }}. {{ advisory.advisory_en }} Organic management: {{ advisory.organic_management }} Chemical control: {{ advisory.chemical_control }}
+                    {% endif %}
+                </div>
+
+                <!-- ==============================================================
+                     CASE A: CONFIRMED DIAGNOSIS (9 STRUCTURED IPM SECTIONS)
+                     ============================================================== -->
+                {% if advisory.confirmed_diagnosis %}
+                <h4 class="fw-bold text-dark mb-3">
+                    <i class="bi bi-journal-check text-success me-2"></i> <span data-i18n="advisory_dossier_title">{{ t('advisory_dossier_title') }}</span>
+                </h4>
+                <p class="text-muted small mb-4" data-i18n="advisory_dossier_subtitle">
+                    {{ t('advisory_dossier_subtitle') }}
+                </p>
+
+                <div class="accordion accordion-modern mb-4" id="confirmedAdvisoryAccordion">
+                    <!-- 1. Overview & Biology -->
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingOverview">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOverview">
+                                <i class="bi bi-info-circle-fill text-success me-3 fs-5"></i>
+                                <span data-i18n="advisory_sec_overview">{{ t('advisory_sec_overview') }}</span>
+                            </button>
+                        </h2>
+                        <div id="collapseOverview" class="accordion-collapse collapse show" data-bs-parent="#confirmedAdvisoryAccordion">
+                            <div class="accordion-body">
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <div class="p-3 bg-light rounded-3 border">
+                                            <div class="small fw-bold text-muted text-uppercase mb-1" data-i18n="advisory_plant_part">{{ t('advisory_plant_part') }}</div>
+                                            <div class="fw-bold text-dark fs-6">{{ advisory.crop }} ({{ advisory.crop_local_name }})</div>
+                                            <div class="small text-muted mt-1"><span data-i18n="advisory_affected_part_label">{{ t('advisory_affected_part_label') }}</span> <strong>{{ advisory.affected_plant_part }}</strong></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="p-3 bg-light rounded-3 border">
+                                            <div class="small fw-bold text-muted text-uppercase mb-1" data-i18n="advisory_causal_label">{{ t('advisory_causal_label') }}</div>
+                                            <div class="fw-bold text-success fs-6">{{ advisory.scientific_name or 'Agricultural Pest / Pathogen' }}</div>
+                                            <div class="small text-muted mt-1"><span data-i18n="advisory_class_label">{{ t('advisory_class_label') }}</span> <strong>{{ advisory.problem_type }}</strong></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mt-3 p-3 bg-white rounded-3 border">
+                                    <div class="small fw-bold text-muted text-uppercase mb-1" data-i18n="advisory_summary_label">{{ t('advisory_summary_label') }}</div>
+                                    <p class="mb-0 text-dark" style="line-height: 1.7;">
+                                        {% if selected_lang == 'te' %}{{ advisory.advisory_te }}{% else %}{{ advisory.advisory_en }}{% endif %}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 2. Symptoms Identification -->
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingSymptoms">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSymptoms">
+                                <i class="bi bi-eye-fill text-success me-3 fs-5"></i>
+                                <span data-i18n="advisory_sec_symptoms">{{ t('advisory_sec_symptoms') }}</span>
+                            </button>
+                        </h2>
+                        <div id="collapseSymptoms" class="accordion-collapse collapse show" data-bs-parent="#confirmedAdvisoryAccordion">
+                            <div class="accordion-body">
+                                <div class="p-3 rounded-3 border" style="background: #f8fafc;">
+                                    <div class="small fw-bold text-muted text-uppercase mb-2"><i class="bi bi-clipboard-pulse text-success me-1"></i> <span data-i18n="advisory_recorded_symptoms">{{ t('advisory_recorded_symptoms') }}</span></div>
+                                    <p class="mb-0 fs-6 text-dark" style="line-height: 1.7;">
+                                        "{{ advisory.symptoms_te if selected_lang == 'te' else advisory.symptoms_en }}"
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 3. Severity & Impact Assessment -->
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingSeverity">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSeverity">
+                                <i class="bi bi-speedometer text-success me-3 fs-5"></i>
+                                <span data-i18n="advisory_sec_severity">{{ t('advisory_sec_severity') }}</span>
+                            </button>
+                        </h2>
+                        <div id="collapseSeverity" class="accordion-collapse collapse" data-bs-parent="#confirmedAdvisoryAccordion">
+                            <div class="accordion-body">
+                                <div class="d-flex align-items-center gap-3 p-3 bg-light rounded-3 border mb-3">
+                                    <span class="badge {% if advisory.severity == 'High' or advisory.severity == 'Severe' %}bg-danger{% elif advisory.severity == 'Medium' %}bg-warning text-dark{% else %}bg-success{% endif %} fs-6 px-3 py-2">
+                                        {{ advisory.severity }}
+                                    </span>
+                                    <div class="small text-muted" data-i18n="advisory_etl_hint">
+                                        {{ t('advisory_etl_hint') }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 4. Organic Management -->
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingOrganic">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOrganic">
+                                <i class="bi bi-flower2 text-success me-3 fs-5"></i>
+                                <span data-i18n="advisory_sec_organic">{{ t('advisory_sec_organic') }}</span>
+                            </button>
+                        </h2>
+                        <div id="collapseOrganic" class="accordion-collapse collapse" data-bs-parent="#confirmedAdvisoryAccordion">
+                            <div class="accordion-body">
+                                <div class="p-3 rounded-3 border" style="background: #f0fdf4;">
+                                    <div class="fw-semibold text-dark mb-2">
+                                        <i class="bi bi-check2-circle text-success me-1"></i> <span data-i18n="advisory_sec4_title">{{ t('advisory_sec4_title') }}</span>
+                                    </div>
+                                    <div class="text-dark" style="line-height: 1.8;">
+                                        {{ advisory.organic_management }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 5. Biological Control Agents -->
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingBio">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseBio">
+                                <i class="bi bi-bug-fill text-success me-3 fs-5"></i>
+                                <span data-i18n="advisory_sec_bio">{{ t('advisory_sec_bio') }}</span>
+                            </button>
+                        </h2>
+                        <div id="collapseBio" class="accordion-collapse collapse" data-bs-parent="#confirmedAdvisoryAccordion">
+                            <div class="accordion-body">
+                                <div class="p-3 rounded-3 border" style="background: #f0fdfa;">
+                                    <div class="fw-semibold text-dark mb-2">
+                                        <i class="bi bi-shield-check text-success me-1"></i> <span data-i18n="advisory_sec5_title">{{ t('advisory_sec5_title') }}</span>
+                                    </div>
+                                    <div class="text-dark" style="line-height: 1.8;">
+                                        {{ advisory.biological_control }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 6. Cultural & Agronomic Practices -->
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingCultural">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCultural">
+                                <i class="bi bi-arrows-fullscreen text-success me-3 fs-5"></i>
+                                <span data-i18n="advisory_sec_cultural">{{ t('advisory_sec_cultural') }}</span>
+                            </button>
+                        </h2>
+                        <div id="collapseCultural" class="accordion-collapse collapse" data-bs-parent="#confirmedAdvisoryAccordion">
+                            <div class="accordion-body">
+                                <div class="p-3 rounded-3 border" style="background: #fafaf9;">
+                                    <div class="fw-semibold text-dark mb-2">
+                                        <i class="bi bi-tree text-success me-1"></i> <span data-i18n="advisory_sec6_title">{{ t('advisory_sec6_title') }}</span>
+                                    </div>
+                                    <div class="text-dark" style="line-height: 1.8;">
+                                        {{ advisory.cultural_control }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 7. Chemical Control & Spray Dosages -->
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingChemical">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseChemical">
+                                <i class="bi bi-prescription2 text-success me-3 fs-5"></i>
+                                <span data-i18n="advisory_sec_chemical">{{ t('advisory_sec_chemical') }}</span>
+                            </button>
+                        </h2>
+                        <div id="collapseChemical" class="accordion-collapse collapse show" data-bs-parent="#confirmedAdvisoryAccordion">
+                            <div class="accordion-body">
+                                <!-- Mandatory Safety Callout Banner -->
+                                <div class="alert alert-warning border-warning d-flex align-items-start gap-3 rounded-3 p-3 mb-3">
+                                    <i class="bi bi-shield-exclamation fs-3 text-warning"></i>
+                                    <div>
+                                        <h6 class="fw-bold mb-1" data-i18n="advisory_chemical_safety_title">{% if current_lang == 'te' %}భద్రతా హెచ్చరిక (రసాయన నిబంధనలు){% else %}Chemical Safety Protocol{% endif %}</h6>
+                                        <p class="small mb-0" style="line-height: 1.6;" data-i18n="advisory_chemical_safety_desc">
+                                            {% if current_lang == 'te' %}రసాయన మందులను తెగులు ఆర్థిక నష్ట పరిమితి (ETL) దాటినప్పుడు మాత్రమే వాడాలి. ఎల్లప్పుడూ ఉత్పత్తి లేబుల్ సూచనలను మరియు స్థానిక మండల వ్యవసాయ అధికారి లేదా కృషి విజ్ఞాన కేంద్రం (KVK) శాస్త్రవేత్తల మార్గదర్శకాలను పాటించండి.{% else %}Chemical sprays should be used strictly only when pest infestation crosses the Economic Threshold Level (ETL). Always follow package label instructions and consult your local Mandal Agricultural Officer or KVK scientists.{% endif %}
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div class="p-3 rounded-3 border bg-white">
+                                    <div class="small fw-bold text-muted text-uppercase mb-2"><i class="bi bi-droplet-half text-danger me-1"></i> <span data-i18n="advisory_dosage_label">{{ t('advisory_dosage_label') }}</span></div>
+                                    <div class="p-3 rounded-3 bg-light border fs-6 text-dark fw-bold" style="line-height: 1.8;">
+                                        {{ advisory.chemical_control }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 8. Prevention & Resistant Varieties -->
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingPrevention">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePrevention">
+                                <i class="bi bi-shield-fill-check text-success me-3 fs-5"></i>
+                                <span data-i18n="advisory_sec_prevention">{{ t('advisory_sec_prevention') }}</span>
+                            </button>
+                        </h2>
+                        <div id="collapsePrevention" class="accordion-collapse collapse" data-bs-parent="#confirmedAdvisoryAccordion">
+                            <div class="accordion-body">
+                                <div class="p-3 rounded-3 border bg-white">
+                                    <div class="fw-semibold text-dark mb-2"><i class="bi bi-check-all text-success me-1"></i> <span data-i18n="advisory_sec8_title">{{ t('advisory_sec8_title') }}</span></div>
+                                    <div class="text-dark" style="line-height: 1.8;">
+                                        {{ advisory.prevention }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 9. Safety Precautions & PPE -->
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingSafety">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSafety">
+                                <i class="bi bi-shield-shaded text-success me-3 fs-5"></i>
+                                <span data-i18n="advisory_sec_safety">{{ t('advisory_sec_safety') }}</span>
+                            </button>
+                        </h2>
+                        <div id="collapseSafety" class="accordion-collapse collapse" data-bs-parent="#confirmedAdvisoryAccordion">
+                            <div class="accordion-body">
+                                <div class="p-3 rounded-3 border" style="background: #fffbeb;">
+                                    <div class="fw-bold text-dark mb-2"><i class="bi bi-person-fill-check text-warning me-1"></i> <span data-i18n="advisory_sec9_title">{{ t('advisory_sec9_title') }}</span></div>
+                                    <div class="text-dark" style="line-height: 1.8;">
+                                        {{ advisory.safety_precautions }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ==============================================================
+                     CASE B: FURTHER DIAGNOSIS WORKFLOW (FALLBACK WITH QUESTIONS)
+                     ============================================================== -->
+                {% else %}
+                <div class="alert alert-warning border-warning p-4 rounded-4 mb-4 shadow-sm">
+                    <div class="d-flex align-items-start gap-3">
+                        <i class="bi bi-exclamation-octagon-fill fs-2 text-warning"></i>
+                        <div>
+                            <h4 class="fw-bold text-dark mb-1" data-i18n="advisory_fu_alert_title">{% if current_lang == 'te' %}మరింత నిర్ధారణ అవసరం{% else %}Confirmed Diagnosis Pending{% endif %}</h4>
+                            <p class="text-secondary mb-0" style="line-height: 1.6;" data-i18n="advisory_fu_alert_desc">
+                                {% if current_lang == 'te' %}అందించిన లక్షణాల ఆధారంగా తెగులును ఖచ్చితంగా ధృవీకరించలేకపోయాము. తప్పుడు పురుగుమందులు వాడి నష్టపోకుండా ఉండేందుకు, దయచేసి క్రింది నిర్ధారణ ప్రశ్నలను మీ పొలంలో పరిశీలించి మరిన్ని వివరాలు అందించండి.{% else %}Based on the reported symptoms, the pathogen could not be definitively confirmed. To prevent crop damage and save input costs, please inspect the following diagnostic questions in your field.{% endif %}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 1: Diagnostic Questions to inspect in field -->
+                <div class="card-modern border p-4 mb-4">
+                    <div class="d-flex align-items-center gap-2 mb-3">
+                        <i class="bi bi-patch-question-fill text-primary fs-4"></i>
+                        <h5 class="fw-bold mb-0 text-dark" data-i18n="advisory_fu_q_title">క్షేత్ర స్థాయి నిర్ధారణ ప్రశ్నలు (Diagnostic Field Questions)</h5>
+                    </div>
+                    <div class="p-3 rounded-3 border bg-light fs-6 text-dark" style="line-height: 1.8; white-space: pre-line;">
+                        {{ advisory.diagnostic_questions }}
+                    </div>
+                </div>
+
+                <!-- Card 2: Interactive Follow-Up Form to refine diagnosis -->
+                <div class="card-modern border p-4 mb-4 shadow-sm" style="background: #f8fafc;">
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <i class="bi bi-chat-left-dots-fill text-success fs-4"></i>
+                        <h5 class="fw-bold mb-0 text-dark" data-i18n="advisory_fu_sub_title">అదనపు పరిశీలనలను నమోదు చేయండి (Submit Follow-up Observations)</h5>
+                    </div>
+                    <p class="small text-muted mb-3" data-i18n="advisory_fu_sub_desc">
+                        పైన పేర్కొన్న ప్రశ్నలకు మీ సమాధానాలు లేదా ఆకులు, కాయలు, కాండంపై గమనించిన అదనపు రంగులు, ఆకారాలను ఇక్కడ వివరించండి:
+                    </p>
+
+                    <form id="followUpForm" onsubmit="submitFollowUpDiagnosis(event);">
+                        <input type="hidden" id="fu_crop" value="{{ advisory.crop }}">
+                        <input type="hidden" id="fu_pred_id" value="{{ prediction_id or '' }}">
+                        <div class="mb-3">
+                            <textarea id="fu_observations" class="form-control-modern" rows="4" placeholder="ఉదాహరణ: ఆకుల అడుగు భాగంలో తెల్లటి మచ్చలు కనిపించాయి, లేదా కండె ఆకారపు మచ్చలు గోధుమ రంగులో ఉన్నాయి..." data-i18n-placeholder="advisory_fu_obs_placeholder" required></textarea>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                            <span class="small text-muted">
+                                <i class="bi bi-cpu text-success me-1"></i> <span data-i18n="advisory_nlp_multiturn">{{ t('advisory_nlp_multiturn') }}</span>
+                            </span>
+                            <button type="submit" id="fu_submit_btn" class="btn btn-premium-primary px-4 py-2">
+                                <span id="fu_spinner" class="spinner-border spinner-border-sm me-2 d-none"></span>
+                                <i class="bi bi-search me-1"></i> <span data-i18n="advisory_fu_btn">పరిశీలనను పునఃసమీక్షించండి (Re-analyze Symptoms)</span>
+                            </button>
+                        </div>
+                    </form>
+                    <div id="fu_error" class="alert alert-danger mt-3 d-none"></div>
+                </div>
+
+                <!-- Card 3: Safe Cultural Prevention & Guidance (Non-Chemical) -->
+                <div class="card-modern border p-4 mb-4">
+                    <h5 class="fw-bold text-dark mb-3"><i class="bi bi-shield-check text-success me-2"></i> <span data-i18n="advisory_fu_cultural_title">సాధారణ రక్షణ & సాంస్కృతిక చర్యలు (Safe Cultural Practices)</span></h5>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="p-3 bg-light rounded-3 border h-100">
+                                <div class="fw-bold text-dark small text-uppercase mb-1" data-i18n="advisory_fu_field_guidance">పొలంలో జాగ్రత్తలు / Field Guidance:</div>
+                                <p class="mb-0 small text-dark" style="line-height: 1.7;">{{ advisory.advisory_te if selected_lang == 'te' else advisory.advisory_en }}</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="p-3 bg-light rounded-3 border h-100">
+                                <div class="fw-bold text-dark small text-uppercase mb-1" data-i18n="advisory_fu_prevention">ముందస్తు నివారణ / Prevention:</div>
+                                <p class="mb-0 small text-dark" style="line-height: 1.7;">{{ advisory.prevention }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="alert alert-danger mt-3 mb-0 small" data-i18n-html="advisory_fu_warning_box">
+                        <i class="bi bi-slash-circle-fill me-1"></i> <strong>రసాయన మందులు వాడవద్దు:</strong> తెగులు ఖచ్చితంగా నిర్ధారణ కాకుండా రసాయనాలు పిచికారీ చేయడం నిషిద్ధం. మరింత సహాయం కోసం స్థానిక కృషి విజ్ఞాన కేంద్రం (KVK) లేదా రైతు భరోసా కేంద్రాన్ని (RBK) సంప్రదించండి.
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- 3. Interactive Search / Ask Any Farming Question Box -->
+        <div class="card-modern p-4 p-md-5 mb-4">
+            <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-3">
+                <h4 class="fw-bold text-dark mb-0">
+                    <i class="bi bi-search text-success me-2"></i> <span data-i18n="advisory_search_header">{{ t('advisory_search_header') }}</span>
+                </h4>
+                <span class="badge bg-success-subtle text-success-emphasis border border-success-subtle px-3 py-2 rounded-pill">
+                    <i class="bi bi-mic-fill me-1 text-danger"></i> <span data-i18n="advisory_speech_enabled">{{ t('advisory_speech_enabled') }}</span>
+                </span>
+            </div>
+
+            <!-- Query Input with Mic Button -->
+            <div class="mb-3">
+                <label for="queryInput" class="form-label-modern" data-i18n="advisory_search_label">{{ t('advisory_search_label') }}</label>
+                <div class="input-group shadow-sm">
+                    <textarea id="queryInput" class="form-control-modern border-end-0" rows="3" placeholder="{{ t('advisory_search_placeholder') }}" data-i18n-placeholder="advisory_search_placeholder"></textarea>
+                    <button type="button" id="micBtn" class="btn btn-outline-danger px-4 d-flex align-items-center justify-content-center" title="Speak question">
+                        <i id="micIcon" class="bi bi-mic-fill fs-3"></i>
+                    </button>
+                </div>
+                <div id="listeningStatus" class="small text-danger mt-2 d-none">
+                    <span class="spinner-grow spinner-grow-sm me-1" role="status"></span>
+                    <span id="listeningText" data-i18n="advisory_listening_hint">{{ t('advisory_listening_hint') }}</span>
+                </div>
+            </div>
+
+            <!-- Quick Sample Question Chips -->
+            <div class="mb-4">
+                <div class="small fw-bold text-muted mb-2 text-uppercase">
+                    <i class="bi bi-lightning-charge-fill text-warning me-1"></i> <span data-i18n="advisory_sample_title">{{ t('advisory_sample_title') }}</span>
+                </div>
+                <div class="d-flex flex-wrap gap-2">
+                    <a href="/advisory?disease=Blast&crop=Rice" class="btn btn-sm btn-outline-success rounded-pill px-3 py-1" data-i18n="advisory_sample_paddy">
+                        {{ t('advisory_sample_paddy') }}
+                    </a>
+                    <a href="/advisory?disease=Whitefly&crop=Cotton" class="btn btn-sm btn-outline-success rounded-pill px-3 py-1" data-i18n="advisory_sample_cotton">
+                        {{ t('advisory_sample_cotton') }}
+                    </a>
+                    <a href="/advisory?disease=Thrips&crop=Chilli" class="btn btn-sm btn-outline-success rounded-pill px-3 py-1" data-i18n="advisory_sample_chilli">
+                        {{ t('advisory_sample_chilli') }}
+                    </a>
+                    <a href="/advisory?disease=Early%20Blight&crop=Tomato" class="btn btn-sm btn-outline-success rounded-pill px-3 py-1" data-i18n="advisory_sample_tomato">
+                        {{ t('advisory_sample_tomato') }}
+                    </a>
+                    <a href="/advisory?disease=Pod%20Borer&crop=Bengal%20Gram" class="btn btn-sm btn-outline-success rounded-pill px-3 py-1" data-i18n="advisory_sample_gram">
+                        {{ t('advisory_sample_gram') }}
+                    </a>
+                    <a href="/advisory?needs_further_diagnosis=true&crop=Rice" class="btn btn-sm btn-outline-warning rounded-pill px-3 py-1" data-i18n="advisory_sample_fallback">
+                        {{ t('advisory_sample_fallback') }}
+                    </a>
+                </div>
+            </div>
+
+            <!-- Action Controls -->
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 pt-2 border-top">
+                <button type="button" id="clearBtn" class="btn btn-outline-secondary rounded-3 px-4 py-2" onclick="document.getElementById('queryInput').value='';">
+                    <i class="bi bi-arrow-counterclockwise me-1"></i> <span data-i18n="btn_clear">{{ t('btn_clear') }}</span>
+                </button>
+                <button type="button" id="submitQueryBtn" class="btn btn-premium-primary px-5 py-3">
+                    <span id="advisorySpinner" class="spinner-border spinner-border-sm me-2 d-none" role="status"></span>
+                    <span><i class="bi bi-send me-1"></i> <span data-i18n="advisory_btn_search">{{ t('advisory_btn_search') }}</span></span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Dynamic Query Response Card (Populated by speech or text query) -->
+        <div id="advisoryResultCard" class="card-modern border-0 shadow-lg d-none mb-5 result-card-elevated">
+            <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-3">
+                <div class="d-flex align-items-center gap-2">
+                    <i class="bi bi-patch-check-fill text-success fs-4"></i>
+                    <h5 class="fw-bold text-dark mb-0" data-i18n="advisory_scientist_response_title">{{ t('advisory_scientist_response_title') }}</h5>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                    <span id="advisoryCategory" class="badge bg-success-subtle text-success-emphasis border border-success-subtle px-3 py-2 rounded-pill fw-bold" data-i18n="advisory_general_tag">{{ t('advisory_general_tag') }}</span>
+                    <button type="button" id="speakResponseBtn" class="btn btn-sm btn-outline-success rounded-pill px-3" onclick="speakText('advisoryAnswer', currentLang)">
+                        <i class="bi bi-volume-up-fill me-1"></i> <span data-i18n="advisory_tts_btn">{{ t('advisory_tts_btn') }}</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <span class="text-muted small fw-bold text-uppercase" data-i18n="advisory_farmer_query_label">{{ t('advisory_farmer_query_label') }}</span>
+                <div class="p-3 bg-light rounded-3 mt-1 fw-semibold text-dark border" id="displayQuery">...</div>
+            </div>
+
+            <div>
+                <span class="text-success small fw-bold text-uppercase"><i class="bi bi-check2-circle me-1"></i> <span data-i18n="advisory_rec_practice_label">{{ t('advisory_rec_practice_label') }}</span></span>
+                <div id="advisoryAnswer" class="mt-2 lead fs-6 text-dark p-3 bg-white rounded-3 border" style="white-space: pre-line; line-height: 1.7;">...</div>
+            </div>
+
+            <div class="mt-3 pt-3 border-top d-flex justify-content-between align-items-center small text-muted">
+                <span><i class="bi bi-cpu text-success me-1"></i> <span data-i18n="advisory_icar_corpus">{{ t('advisory_icar_corpus') }}</span></span>
+                <span id="advisoryTimestamp"></span>
+            </div>
+        </div>
+
+        <!-- 4. Browse All 24 Verified Pathogen Dossiers -->
+        <div class="card-modern p-4 p-md-5 mb-5">
+            <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-3">
+                <div>
+                    <h5 class="fw-bold text-dark mb-1">
+                        <i class="bi bi-grid-3x3-gap-fill text-success me-2"></i> <span data-i18n="advisory_catalog_heading">{{ t('advisory_catalog_heading') }}</span>
+                    </h5>
+                    <small class="text-muted" data-i18n="advisory_catalog_sub">{{ t('advisory_catalog_sub') }}</small>
+                </div>
+                <span class="badge bg-light text-muted border px-3 py-2 rounded-pill"><span data-i18n="advisory_total_dossiers">{{ t('advisory_total_dossiers') }}</span>: {{ available_diseases | length }}</span>
+            </div>
+
+            <div class="row g-3">
+                {% for item in available_diseases %}
+                <div class="col-sm-6 col-lg-4 col-xl-3">
+                    <a href="/advisory?disease={{ item.name | urlencode }}&crop={{ item.crops[0] | urlencode if item.crops else '' }}" class="card-modern text-decoration-none p-3 h-100 d-flex flex-column justify-content-between border hover-lift">
+                        <div>
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <span class="badge {% if item.type == 'Disease' %}bg-primary-subtle text-primary-emphasis{% else %}bg-danger-subtle text-danger-emphasis{% endif %} px-2 py-1 small">
+                                    {{ item.type }}
+                                </span>
+                                <span class="badge bg-light text-dark border small">
+                                    {{ item.crops[0] if item.crops else 'General' }}
+                                </span>
+                            </div>
+                            <h6 class="fw-bold text-dark mb-1">{{ item.name }}</h6>
+                            {% if item.scientific_name %}
+                            <small class="text-success fst-italic d-block mb-2">{{ item.scientific_name }}</small>
+                            {% endif %}
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center pt-2 border-top small text-success fw-semibold">
+                            <span data-i18n="advisory_view_link">సలహా చూడండి</span>
+                            <i class="bi bi-arrow-right"></i>
+                        </div>
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/speech.js') }}"></script>
+<script>
+let currentAdvisoryLang = "{{ selected_lang or 'te' }}";
+
+function switchAdvisoryLanguage(lang) {
+    if (window.switchLanguage) {
+        window.switchLanguage(lang);
+    }
+    const url = new URL(window.location.href);
+    url.searchParams.set('lang', lang);
+    window.location.href = url.toString();
+}
+
+document.addEventListener('languageChanged', function (e) {
+    const newLang = e.detail && e.detail.language;
+    if (newLang && newLang !== currentAdvisoryLang) {
+        switchAdvisoryLanguage(newLang);
+    }
+});
+
+function readAloudAdvisory() {
+    const el = document.getElementById('narratableAdvisorySummary');
+    if (!el) return;
+    const text = el.textContent.trim();
+    if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = currentAdvisoryLang === 'te' ? 'te-IN' : 'en-IN';
+        utterance.rate = 0.95;
+        window.speechSynthesis.speak(utterance);
+    } else {
+        alert("Text to speech is not supported in this browser.");
+    }
+}
+
+async function submitFollowUpDiagnosis(e) {
+    e.preventDefault();
+    const crop = document.getElementById('fu_crop')?.value || 'General';
+    const predId = document.getElementById('fu_pred_id')?.value || '';
+    const followUpText = document.getElementById('fu_observations')?.value.trim();
+    const btn = document.getElementById('fu_submit_btn');
+    const spinner = document.getElementById('fu_spinner');
+    const errorEl = document.getElementById('fu_error');
+
+    if (!followUpText) return;
+
+    if (btn) btn.disabled = true;
+    if (spinner) spinner.classList.remove('d-none');
+    if (errorEl) errorEl.classList.add('d-none');
+
+    try {
+        const response = await fetch('/api/predict/follow-up', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                original_description: "",
+                follow_up: followUpText,
+                crop: crop,
+                language: currentAdvisoryLang,
+                prediction_id: predId ? parseInt(predId) : null
+            })
+        });
+
+        const data = await response.json();
+        if (!response.ok || !data.success) {
+            throw new Error(data.error || "Failed to process follow-up diagnosis.");
+        }
+
+        if (data.result && data.result.advisory_url) {
+            window.location.href = data.result.advisory_url;
+        } else {
+            window.location.reload();
+        }
+    } catch (err) {
+        if (errorEl) {
+            errorEl.textContent = err.message || "An error occurred during re-analysis.";
+            errorEl.classList.remove('d-none');
+        }
+    } finally {
+        if (btn) btn.disabled = false;
+        if (spinner) spinner.classList.add('d-none');
+    }
+}
+</script>
+{% endblock %}

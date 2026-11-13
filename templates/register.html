@@ -1,0 +1,201 @@
+{% extends "base.html" %}
+
+{% block title %}Farmer Registration | RYTHU MITHRA{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center my-4">
+    <div class="col-lg-11 col-xl-10">
+        <div class="card-modern p-0 overflow-hidden shadow-lg border-0">
+            <div class="row g-0">
+                <!-- Left Hero Visual Side -->
+                <div class="col-md-4 p-5 text-white d-flex flex-column justify-content-between" style="background: linear-gradient(145deg, var(--c-forest-950) 0%, var(--c-forest-800) 60%, var(--c-forest-700) 100%);">
+                    <div>
+                        <div class="brand-badge mb-3">🌾</div>
+                        <h3 class="fw-bold text-white mb-2" data-i18n="app_name">{{ t('app_name') }}</h3>
+                        <p class="text-white-50 small mb-4" data-i18n="app_tagline">{{ t('app_tagline') }}</p>
+                        
+                        <div class="p-3 rounded-4 mb-3" style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);">
+                            <div class="small fw-bold text-success-emphasis mb-1" data-i18n="auth_reg_left_title">{{ t('auth_reg_left_title') }}</div>
+                            <p class="small text-white-50 mb-0" data-i18n="auth_reg_left_desc">
+                                {{ t('auth_reg_left_desc') }}
+                            </p>
+                        </div>
+
+                        <div class="p-3 rounded-4" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);">
+                            <div class="small fw-bold text-white mb-1"><i class="bi bi-shield-lock-fill text-success me-1"></i> <span data-i18n="auth_security_badge">{{ t('auth_security_badge') }}</span></div>
+                            <p class="small text-white-50 mb-0" data-i18n="auth_sec_note">
+                                {{ t('auth_sec_note') }}
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="small text-white-50 mt-4">
+                        <i class="bi bi-patch-check-fill text-success me-1"></i> <span data-i18n="auth_sec_phase">{{ t('auth_sec_phase') }}</span>
+                    </div>
+                </div>
+
+                <!-- Right Form Side -->
+                <div class="col-md-8 p-4 p-md-5 bg-white">
+                    <div class="mb-4">
+                        <h3 class="fw-bold text-dark mb-1" data-i18n="auth_reg_title">{{ t('auth_reg_title') }}</h3>
+                        <p class="text-muted small" data-i18n="auth_reg_subtitle">
+                            {{ t('auth_reg_subtitle') }}
+                        </p>
+                    </div>
+
+                    <form method="POST" action="{{ url_for('main.register') }}" onsubmit="return validateRegisterForm();">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                        <!-- Row 1: Full Name & Mobile Number -->
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label for="full_name" class="form-label-modern" data-i18n="auth_field_name">
+                                    {{ t('auth_field_name') }} <span class="text-danger">*</span>
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light text-muted border-end-0"><i class="bi bi-person-badge"></i></span>
+                                    <input type="text" class="form-control-modern border-start-0" id="full_name" name="full_name" value="{{ form_data.get('full_name', '') if form_data else '' }}" placeholder="{{ t('auth_field_name_placeholder') }}" data-i18n-placeholder="auth_field_name_placeholder" required autofocus>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="mobile_number" class="form-label-modern" data-i18n="auth_field_mobile">
+                                    {{ t('auth_field_mobile') }} <span class="text-danger">*</span>
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light text-muted border-end-0"><i class="bi bi-telephone"></i></span>
+                                    <input type="tel" class="form-control-modern border-start-0" id="mobile_number" name="mobile_number" value="{{ form_data.get('mobile_number', '') if form_data else '' }}" placeholder="{{ t('auth_field_mobile_placeholder') }}" data-i18n-placeholder="auth_field_mobile_placeholder" pattern="[6-9][0-9]{9}" maxlength="10" required>
+                                </div>
+                                <div class="form-text small text-muted" data-i18n="auth_field_mobile_help">{{ t('auth_field_mobile_help') }}</div>
+                            </div>
+                        </div>
+
+                        <!-- Row 2: Email (Optional) & Preferred Language -->
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label for="email" class="form-label-modern" data-i18n="auth_field_email">
+                                    {{ t('auth_field_email') }} <span class="text-muted small fw-normal">(Optional)</span>
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light text-muted border-end-0"><i class="bi bi-envelope"></i></span>
+                                    <input type="email" class="form-control-modern border-start-0" id="email" name="email" value="{{ form_data.get('email', '') if form_data else '' }}" placeholder="{{ t('auth_field_email_placeholder') }}" data-i18n-placeholder="auth_field_email_placeholder">
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="preferred_language" class="form-label-modern" data-i18n="auth_field_lang">
+                                    {{ t('auth_field_lang') }} <span class="text-danger">*</span>
+                                </label>
+                                <select class="form-select-modern" id="preferred_language" name="preferred_language">
+                                    <option value="te" selected>Telugu (తెలుగు)</option>
+                                    <option value="en">English</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Row 3: Location (State, District, Mandal) -->
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-4">
+                                <label for="state" class="form-label-modern" data-i18n="auth_field_state">{{ t('auth_field_state') }} <span class="text-danger">*</span></label>
+                                <select class="form-select-modern" id="state" name="state">
+                                    <option value="Andhra Pradesh" selected>Andhra Pradesh (ఆంధ్రప్రదేశ్)</option>
+                                    <option value="Telangana">Telangana (తెలంగాణ)</option>
+                                    <option value="Karnataka">Karnataka</option>
+                                    <option value="Tamil Nadu">Tamil Nadu</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label for="district" class="form-label-modern" data-i18n="auth_field_district">
+                                    {{ t('auth_field_district') }} <span class="text-danger">*</span>
+                                </label>
+                                <select class="form-select-modern" id="district" name="district">
+                                    <option value="Guntur">Guntur (గుంటూరు)</option>
+                                    <option value="Krishna">Krishna (కృష్ణా)</option>
+                                    <option value="Warangal">Warangal (వరంగల్)</option>
+                                    <option value="Khammam">Khammam (ఖమ్మం)</option>
+                                    <option value="Kurnool">Kurnool (కర్నూలు)</option>
+                                    <option value="Nalgonda">Nalgonda (నల్గొండ)</option>
+                                    <option value="East Godavari">East Godavari (తూర్పు గోదావరి)</option>
+                                    <option value="West Godavari">West Godavari (పశ్చిమ గోదావరి)</option>
+                                    <option value="Prakasam">Prakasam (ప్రకాశం)</option>
+                                    <option value="Anantapur">Anantapur (అనంతపురం)</option>
+                                    <option value="Karimnagar">Karimnagar (కరీంనగర్)</option>
+                                    <option value="Other">Other District</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label for="mandal" class="form-label-modern" data-i18n="auth_field_mandal">{{ t('auth_field_mandal') }}</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light text-muted border-end-0"><i class="bi bi-geo-alt"></i></span>
+                                    <input type="text" class="form-control-modern border-start-0" id="mandal" name="mandal" value="{{ form_data.get('mandal', '') if form_data else '' }}" placeholder="{{ t('auth_field_mandal_placeholder') }}" data-i18n-placeholder="auth_field_mandal_placeholder">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Row 4: Password & Confirm Password -->
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label for="password" class="form-label-modern" data-i18n="auth_field_password">
+                                    {{ t('auth_field_password') }} <span class="text-danger">*</span>
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light text-muted border-end-0"><i class="bi bi-shield-lock"></i></span>
+                                    <input type="password" class="form-control-modern border-start-0 border-end-0" id="password" name="password" placeholder="{{ t('auth_field_password_placeholder') }}" data-i18n-placeholder="auth_field_password_placeholder" required minlength="4">
+                                    <button type="button" class="btn btn-outline-secondary border-start-0" onclick="togglePasswordVisibility('password', 'toggleRegPassIcon')">
+                                        <i id="toggleRegPassIcon" class="bi bi-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="confirm_password" class="form-label-modern" data-i18n="auth_field_confirm_password">
+                                    {{ t('auth_field_confirm_password') }} <span class="text-danger">*</span>
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light text-muted border-end-0"><i class="bi bi-shield-check"></i></span>
+                                    <input type="password" class="form-control-modern border-start-0 border-end-0" id="confirm_password" name="confirm_password" placeholder="{{ t('auth_field_confirm_placeholder') }}" data-i18n-placeholder="auth_field_confirm_placeholder" required minlength="4">
+                                    <button type="button" class="btn btn-outline-secondary border-start-0" onclick="togglePasswordVisibility('confirm_password', 'toggleConfirmPassIcon')">
+                                        <i id="toggleConfirmPassIcon" class="bi bi-eye"></i>
+                                    </button>
+                                </div>
+                                <div id="passwordMismatchError" class="text-danger small mt-1 d-none">
+                                    <i class="bi bi-exclamation-circle me-1"></i> Passwords do not match.
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-premium-primary w-100 py-3 mb-3 fw-bold justify-content-center">
+                            <i class="bi bi-person-check-fill me-1"></i> <span data-i18n="auth_btn_register">{{ t('auth_btn_register') }}</span>
+                        </button>
+
+                        <div class="text-center small text-muted">
+                            <span data-i18n="auth_have_account">{{ t('auth_have_account') }}</span>
+                            <a href="{{ url_for('main.login') }}" class="text-success fw-bold text-decoration-none ms-1" data-i18n="auth_btn_login">
+                                {{ t('auth_btn_login') }}
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function validateRegisterForm() {
+    const p1 = document.getElementById('password').value;
+    const p2 = document.getElementById('confirm_password').value;
+    const errorEl = document.getElementById('passwordMismatchError');
+    if (p1 !== p2) {
+        if (errorEl) errorEl.classList.remove('d-none');
+        document.getElementById('confirm_password').focus();
+        return false;
+    }
+    if (errorEl) errorEl.classList.add('d-none');
+    return true;
+}
+</script>
+{% endblock %}

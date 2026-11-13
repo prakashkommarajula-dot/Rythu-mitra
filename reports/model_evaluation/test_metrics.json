@@ -1,0 +1,17 @@
+{
+  "model_architecture": "xlm-roberta-base",
+  "num_classes": 23,
+  "loss_function": "Class-Weighted CrossEntropyLoss",
+  "evaluation_source": "Crop_Disease_Pest_NLP (1).ipynb (Colab T4 Run) & test.csv Split",
+  "total_test_samples": 104,
+  "accuracy": 0.9615,
+  "macro_f1": 0.9524,
+  "weighted_f1": 0.9597,
+  "validation_metrics": {
+    "eval_loss": 0.9782,
+    "eval_accuracy": 0.9817,
+    "eval_macro_f1": 0.9830,
+    "eval_weighted_f1": 0.9815
+  },
+  "notes": "Evaluation metrics recorded from the Google Colab training run on the held-out test split. Uncalibrated softmax probabilities hover between 0.08 and 0.16 on novel conversational inputs, necessitating safety thresholding and further-diagnosis fallbacks."
+}

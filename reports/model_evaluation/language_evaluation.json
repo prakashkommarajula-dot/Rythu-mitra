@@ -1,0 +1,29 @@
+{
+  "summary": "Language-Wise NLP Model Evaluation on Rythu Mithra Corpus",
+  "total_test_samples": 104,
+  "language_breakdown": {
+    "Pure Telugu": {
+      "sample_count": 75,
+      "estimated_accuracy": 0.9600,
+      "estimated_weighted_f1": 0.9585,
+      "notes": "Strong semantic alignment with Telugu vocabulary and agricultural morphological stems."
+    },
+    "Telugu-English Code-Mixed": {
+      "sample_count": 29,
+      "estimated_accuracy": 0.9655,
+      "estimated_weighted_f1": 0.9620,
+      "notes": "XLM-RoBERTa cross-lingual subword tokenizer successfully maps technical English crop/pest terms embedded in Telugu syntax."
+    },
+    "Pure English": {
+      "sample_count": 0,
+      "estimated_accuracy": null,
+      "estimated_weighted_f1": null,
+      "notes": "Limitation: No pure English agricultural symptom descriptions were available in the cleaned classification test split. English queries are handled via cross-lingual transfer and agricultural synonym lookup with safety fallback."
+    }
+  },
+  "limitations": [
+    "Severe language skew: Raw dataset was 94.4% Telugu, resulting in zero pure English test samples after deduplication.",
+    "Small sample sizes for rare classes (e.g. Yellow Vein Mosaic Virus has support 2, Blast has support 2 in the test split).",
+    "Softmax calibration drift on conversational inputs requiring certainty thresholding."
+  ]
+}

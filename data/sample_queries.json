@@ -1,0 +1,44 @@
+[
+  {
+    "language": "te",
+    "language_name": "Telugu",
+    "query": "వరి పంటలో అగ్గి తెగులు నివారణకు ఏ మందు పిచికారీ చేయాలి?",
+    "category": "Disease Management",
+    "sample_answer": "వరిలో అగ్గి తెగులు నివారణకు ట్రైసైక్లాజోల్ 75% WP లీటరు నీటికి 0.6 గ్రా. చొప్పున కలిపి పిచికారీ చేయాలి. నత్రజని ఎరువుల వాడకాన్ని తగ్గించండి."
+  },
+  {
+    "language": "te",
+    "language_name": "Telugu",
+    "query": "ప్రత్తి పంటలో తెల్లదోమ నివారణకు సేంద్రీయ పద్ధతులు ఏమిటి?",
+    "category": "Pest Control",
+    "sample_answer": "ప్రత్తిలో తెల్లదోమ నివారణకు ఎకరాకు 15-20 పసుపు రంగు జిగురు అట్టలను ఏర్పాటు చేయండి. 5% వేప గింజల కషాయం (NSKE) లేదా వేపనూనె 5 మి.లీ/లీ పిచికారీ చేయండి."
+  },
+  {
+    "language": "hi",
+    "language_name": "Hindi",
+    "query": "टमाटर में अगेती झुलसा रोग के क्या लक्षण हैं और इसका उपचार क्या है?",
+    "category": "Disease Management",
+    "sample_answer": "टमाटर के अगेती झुलसा में निचली पत्तियों पर संकेंद्रित छल्लों (टारगेट बोर्ड) वाले भूरे धब्बे बनते हैं। इसके उपचार हेतु मैंकोजेब 75% WP 2.5 ग्राम/लीटर का छिड़काव करें।"
+  },
+  {
+    "language": "hi",
+    "language_name": "Hindi",
+    "query": "धान की फसल में भूरा धब्बा रोग को कैसे नियंत्रित करें?",
+    "category": "Disease Management",
+    "sample_answer": "धान के भूरा धब्बा रोग के नियंत्रण के लिए पोटाश का संतुलित प्रयोग करें और प्रोपिकोनाजोल 25% EC 1 मिली/लीटर पानी में घोलकर छिड़कें।"
+  },
+  {
+    "language": "en",
+    "language_name": "English",
+    "query": "What are the early management practices for potato late blight?",
+    "category": "Preventative Advisory",
+    "sample_answer": "For potato late blight, use certified disease-free seed tubers, ensure proper ridge earthing-up, and spray Mancozeb 75% WP @ 2.5g/L preventatively before rain periods."
+  },
+  {
+    "language": "en",
+    "language_name": "English",
+    "query": "How to identify and control fall armyworm in maize?",
+    "category": "Pest Control",
+    "sample_answer": "Look for pinholes and large ragged feeding holes with frass in maize whorls. Spray Chlorantraniliprole 18.5% SC @ 0.4ml/L or Emamectin Benzoate 5% SG @ 0.4g/L directly into the whorls."
+  }
+]

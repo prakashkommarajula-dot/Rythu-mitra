@@ -1,0 +1,162 @@
+{% extends "base.html" %}
+
+{% block title %}Agro-Weather Alerts | RYTHU MITHRA{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-xl-11">
+        <!-- Header Banner -->
+        <div class="card-modern mb-4 p-4 p-md-5 border-0 shadow-sm" style="background: linear-gradient(135deg, var(--c-forest-900) 0%, var(--c-forest-700) 100%); color: #ffffff;">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+                <div>
+                    <div class="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill mb-2" style="background: rgba(255,255,255,0.15); font-size: 0.8rem; color: var(--c-emerald-300);">
+                        <i class="bi bi-cloud-sun-fill"></i> <span data-i18n="weather_badge_forecast">{{ t('weather_badge_forecast', 'Agro-Meteorology & Pest Forecast') }}</span>
+                    </div>
+                    <h2 class="fw-bold text-white mb-2" data-i18n="weather_title">
+                        {{ t('weather_title') }}
+                    </h2>
+                    <p class="text-white-50 mb-0 small" data-i18n="weather_subtitle">
+                        {{ t('weather_subtitle') }}
+                    </p>
+                </div>
+                <div>
+                    <span class="badge bg-white text-success px-3 py-2 rounded-pill fw-bold shadow-sm" data-i18n="weather_badge_station">
+                        <i class="bi bi-broadcast me-1"></i> {{ t('weather_badge_station') }}
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Weather Status Card -->
+        <div class="card-modern p-4 mb-4">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 border-bottom pb-3 mb-4">
+                <div>
+                    <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-3 py-2 rounded-pill fw-bold mb-1" data-i18n="weather_active_badge">
+                        <i class="bi bi-exclamation-octagon-fill me-1"></i> {{ t('weather_active_badge') }}
+                    </span>
+                    <h5 class="fw-bold text-dark mt-2 mb-0" data-i18n="weather_indicators_title">{{ t('weather_indicators_title') }}</h5>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                    <label for="districtSelect" class="small fw-bold text-muted text-nowrap" data-i18n="weather_district_label">{{ t('weather_district_label') }}</label>
+                    <select id="districtSelect" class="form-select-modern py-2" style="min-width: 200px;">
+                        <option value="Guntur" selected>Guntur (గుంటూరు)</option>
+                        <option value="Krishna">Krishna (కృష్ణా)</option>
+                        <option value="Warangal">Warangal (వరంగల్)</option>
+                        <option value="Khammam">Khammam (ఖమ్మం)</option>
+                        <option value="Kurnool">Kurnool (కర్నూలు)</option>
+                        <option value="East Godavari">East Godavari (తూర్పు గోదావరి)</option>
+                        <option value="West Godavari">West Godavari (పశ్చిమ గోదావరి)</option>
+                        <option value="Nalgonda">Nalgonda (నల్గొండ)</option>
+                        <option value="Anantapur">Anantapur (అనంతపురం)</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Meteorological Cards -->
+            <div class="row g-3 mb-4">
+                <div class="col-md-3 col-sm-6">
+                    <div class="p-4 bg-light rounded-4 text-center border h-100">
+                        <div class="fs-1 text-warning mb-2"><i class="bi bi-thermometer-half"></i></div>
+                        <div class="small fw-bold text-muted" data-i18n="weather_stat_temp">{{ t('weather_stat_temp') }}</div>
+                        <div class="fs-4 fw-bold text-dark my-1">26°C - 33°C</div>
+                        <div class="small text-muted" data-i18n="weather_stat_temp_sub">{{ t('weather_stat_temp_sub') }}</div>
+                    </div>
+                </div>
+
+                <div class="col-md-3 col-sm-6">
+                    <div class="p-4 bg-light rounded-4 text-center border h-100">
+                        <div class="fs-1 text-primary mb-2"><i class="bi bi-droplet-half"></i></div>
+                        <div class="small fw-bold text-muted" data-i18n="weather_stat_humidity">{{ t('weather_stat_humidity') }}</div>
+                        <div class="fs-4 fw-bold text-primary my-1">78% - 88%</div>
+                        <div class="small text-danger fw-bold"><i class="bi bi-arrow-up"></i> <span data-i18n="weather_stat_humidity_sub">{{ t('weather_stat_humidity_sub') }}</span></div>
+                    </div>
+                </div>
+
+                <div class="col-md-3 col-sm-6">
+                    <div class="p-4 bg-light rounded-4 text-center border h-100">
+                        <div class="fs-1 text-success mb-2"><i class="bi bi-wind"></i></div>
+                        <div class="small fw-bold text-muted" data-i18n="weather_stat_wind">{{ t('weather_stat_wind') }}</div>
+                        <div class="fs-4 fw-bold text-success my-1">8 - 14 km/h</div>
+                        <div class="small text-success fw-bold"><i class="bi bi-check-circle"></i> <span data-i18n="weather_stat_wind_sub">{{ t('weather_stat_wind_sub') }}</span></div>
+                    </div>
+                </div>
+
+                <div class="col-md-3 col-sm-6">
+                    <div class="p-4 bg-light rounded-4 text-center border h-100">
+                        <div class="fs-1 text-info mb-2"><i class="bi bi-cloud-rain-heavy"></i></div>
+                        <div class="small fw-bold text-muted" data-i18n="weather_stat_rain">{{ t('weather_stat_rain') }}</div>
+                        <div class="fs-4 fw-bold text-info my-1" data-i18n="weather_rain_condition">{{ t('weather_rain_condition') }}</div>
+                        <div class="small text-muted" data-i18n="weather_stat_rain_sub">{{ t('weather_stat_rain_sub') }}</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fungal & Spore Outbreak Warning Banner -->
+            <div class="p-4 rounded-4 border-start border-4 border-warning bg-warning bg-opacity-10 mb-2">
+                <div class="d-flex align-items-center gap-2 mb-2">
+                    <i class="bi bi-exclamation-triangle-fill text-warning fs-5"></i>
+                    <h6 class="fw-bold text-dark mb-0" data-i18n="weather_alert_title">{{ t('weather_alert_title') }}</h6>
+                </div>
+                <p class="small text-dark mb-3" data-i18n="weather_alert_desc">
+                    {{ t('weather_alert_desc') }}
+                </p>
+                <div class="row g-2 small text-muted">
+                    <div class="col-md-4">
+                        <div class="p-2 bg-white rounded-3 border" data-i18n-html="weather_paddy_alert">
+                            {% if current_lang == 'te' %}<strong>🌾 వరి (Paddy):</strong> అగ్గి తెగులు వచ్చే అవకాశం ఎక్కువ. ఎక్కువ రోజులు నీరు నిల్వ ఉండకుండా చూసుకోండి.{% else %}<strong>🌾 Paddy (వరి):</strong> Leaf Blast risk elevated. Avoid standing stagnant water for extended periods.{% endif %}
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="p-2 bg-white rounded-3 border" data-i18n-html="weather_cotton_alert">
+                            {% if current_lang == 'te' %}<strong>🌱 పత్తి (Cotton):</strong> అధిక తేమ వల్ల తెల్లదోమ మరియు రసం పీల్చే పురుగులు వేగంగా పెరుగుతాయి.{% else %}<strong>🌱 Cotton (పత్తి):</strong> High humidity promotes Whitefly and Sucking Pest reproduction.{% endif %}
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="p-2 bg-white rounded-3 border" data-i18n-html="weather_chilli_alert">
+                            {% if current_lang == 'te' %}<strong>🌶️ మిరప (Chilli):</strong> బూడిద తెగులు, కొమ్మ ఎండు తెగులు వ్యాప్తి చెందే అవకాశం ఉంది. వర్ష సూచన ఉంటే జిగురు మందు కలపండి.{% else %}<strong>🌶️ Chilli (మిరప):</strong> Powdery mildew and die-back fungi thrive. Apply sticking agents if rain threatens.{% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Safe Spraying & Official Support Cards -->
+        <div class="row g-4 mb-5">
+            <div class="col-md-6">
+                <div class="card-modern h-100">
+                    <div class="d-flex align-items-center gap-2 mb-3">
+                        <i class="bi bi-shield-check text-success fs-4"></i>
+                        <h5 class="fw-bold text-dark mb-0" data-i18n="weather_spray_title">{{ t('weather_spray_title') }}</h5>
+                    </div>
+                    <ul class="list-unstyled small text-muted d-flex flex-column gap-2 mb-0">
+                        <li><i class="bi bi-check-circle-fill text-success me-2"></i> <span data-i18n-html="weather_spray_tip1">{% if current_lang == 'te' %}<strong>పిచికారీ సమయం:</strong> ఉదయం (7:00 - 10:00) లేదా సాయంత్రం (4:00 - 6:30) మాత్రమే మందులు పిచికారీ చేయండి.{% else %}<strong>Best Spray Timing:</strong> Morning (7:00 AM - 10:00 AM) or Late Afternoon (4:00 PM - 6:30 PM).{% endif %}</span></li>
+                        <li><i class="bi bi-check-circle-fill text-success me-2"></i> <span data-i18n-html="weather_spray_tip2">{% if current_lang == 'te' %}<strong>మధ్యాహ్న ఎండ వద్దు:</strong> అధిక ఉష్ణోగ్రత (>35°C) వల్ల మందు ఆవిరైపోయి ఆకులు మాడిపోయే ప్రమాదం ఉంది.{% else %}<strong>Avoid Midday Sun:</strong> High temperatures (>35°C) increase spray evaporation and leaf scorch (phytotoxicity).{% endif %}</span></li>
+                        <li><i class="bi bi-check-circle-fill text-success me-2"></i> <span data-i18n-html="weather_spray_tip3">{% if current_lang == 'te' %}<strong>వర్షపాత వ్యవధి:</strong> రసాయన మందు పిచికారీ చేసిన తర్వాత కనీసం 3 నుండి 4 గంటల పొడి వాతావరణం ఉండేలా చూసుకోండి.{% else %}<strong>Rain Washing Window:</strong> Ensure at least 3 to 4 hours of dry weather after applying chemical sprays.{% endif %}</span></li>
+                        <li><i class="bi bi-check-circle-fill text-success me-2"></i> <span data-i18n-html="weather_spray_tip4">{% if current_lang == 'te' %}<strong>గాలి వేగం:</strong> గాలి వేగం గంటకు 18 కి.మీ కంటే ఎక్కువ ఉన్నప్పుడు పిచికారీ చేయవద్దు.{% else %}<strong>Wind Speed Check:</strong> Never spray when wind speed exceeds 18 km/h to prevent spray drift onto neighboring crops.{% endif %}</span></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card-modern h-100">
+                    <div class="d-flex align-items-center gap-2 mb-3">
+                        <i class="bi bi-telephone-outbound text-success fs-4"></i>
+                        <h5 class="fw-bold text-dark mb-0" data-i18n="weather_helpline_title">{{ t('weather_helpline_title') }}</h5>
+                    </div>
+                    <p class="small text-muted mb-3" data-i18n="weather_support_desc">
+                        {{ t('weather_support_desc') }}
+                    </p>
+                    <div class="p-3 bg-light rounded-3 border mb-2">
+                        <div class="small fw-bold text-dark" data-i18n="weather_kcc_title">{{ t('weather_kcc_title') }}</div>
+                        <div class="fs-6 fw-bold text-success">1800-180-1551 (6:00 AM - 10:00 PM)</div>
+                    </div>
+                    <div class="p-3 bg-light rounded-3 border">
+                        <div class="small fw-bold text-dark" data-i18n="weather_rbk_title">{{ t('weather_rbk_title') }}</div>
+                        <div class="fs-6 fw-bold text-success" data-i18n="weather_toll_free">{{ t('weather_toll_free') }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

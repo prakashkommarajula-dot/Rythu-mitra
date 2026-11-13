@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}Error {{ error_code }} | RYTHU MITHRA{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center py-5">
+    <div class="col-md-7 text-center">
+        <div class="card card-rythu p-5 border shadow-sm">
+            <div class="display-1 fw-bold text-success mb-2">{{ error_code }}</div>
+            <h3 class="fw-bold text-dark mb-2" data-i18n="err_something_wrong">{{ t('err_something_wrong') }}</h3>
+            <p class="text-muted mb-4 lead fs-6">{{ error_message }}</p>
+            <div class="d-flex justify-content-center gap-3">
+                <a href="{{ url_for('main.index') }}?lang={{ current_lang }}" class="btn btn-farmer-primary">
+                    <i class="bi bi-house-door me-1"></i> <span data-i18n="err_return_home">{{ t('err_return_home') }}</span>
+                </a>
+                <a href="{{ url_for('disease.predict_page') }}?lang={{ current_lang }}" class="btn btn-farmer-secondary">
+                    <i class="bi bi-chat-square-text me-1"></i> <span data-i18n="err_disease_prediction">{{ t('err_disease_prediction') }}</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

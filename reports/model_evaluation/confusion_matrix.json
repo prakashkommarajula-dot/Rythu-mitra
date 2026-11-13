@@ -1,0 +1,38 @@
+{
+  "total_samples": 104,
+  "classes": [
+    "Bacterial Wilt", "Blast", "Brown Planthopper", "Early Blight", "Fall Armyworm",
+    "Fruit Borer", "Fruit and Shoot Borer", "Fusarium Wilt", "Grain Mold", "Leaf Blotch",
+    "Leaf Curl Virus", "Leaf Miner", "Pink Bollworm", "Pod Borer", "Powdery Mildew",
+    "Rhizome Rot", "Shoot Fly", "Thrips", "Tikka Leaf Spot", "Turcicum Leaf Blight",
+    "Whitefly", "Yellow Mosaic Virus", "Yellow Vein Mosaic Virus"
+  ],
+  "overall_accuracy": 0.9615,
+  "misclassifications_count": 4,
+  "key_confusion_pairs": [
+    {
+      "true_class": "Fruit and Shoot Borer",
+      "predicted_as": "Fruit Borer",
+      "count": 1,
+      "reason": "High semantic overlap in pod/fruit boring symptom descriptions."
+    },
+    {
+      "true_class": "Turcicum Leaf Blight",
+      "predicted_as": "Early Blight",
+      "count": 1,
+      "reason": "Similar leaf necrotic lesion descriptions across maize and solanaceous crops."
+    },
+    {
+      "true_class": "Leaf Miner",
+      "predicted_as": "Tikka Leaf Spot",
+      "count": 1,
+      "reason": "Leaf chlorosis and spotted trail phrasing overlap in Telugu descriptions."
+    },
+    {
+      "true_class": "Rhizome Rot",
+      "predicted_as": "Fusarium Wilt",
+      "count": 1,
+      "reason": "Wilt and root rotting descriptions share Telugu stem verbs for wilting (వాడిపోవడం)."
+    }
+  ]
+}

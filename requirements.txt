@@ -1,0 +1,22 @@
+# Rythu Mithra - Dependencies
+# Web Framework and Utilities
+Flask>=3.0.0
+Werkzeug>=3.0.0
+Flask-SQLAlchemy>=3.1.1
+SQLAlchemy>=2.0.0
+python-dotenv>=1.0.0
+
+# Image Processing and Computer Vision
+Pillow>=10.2.0
+numpy>=1.26.0
+
+# Deep Learning - Image Classification
+tensorflow>=2.15.0
+
+# NLP - Multilingual XLM-RoBERTa
+transformers>=4.38.0
+torch>=2.2.0
+sentencepiece>=0.2.0
+
+# Testing & Quality Assurance
+pytest>=8.0.0

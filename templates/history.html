@@ -1,0 +1,370 @@
+{% extends "base.html" %}
+
+{% block title %}Prediction History | RYTHU MITHRA{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-xl-11">
+        <!-- Header Banner -->
+        <div class="card-modern mb-4 p-4 p-md-5 border-0 shadow-sm" style="background: linear-gradient(135deg, var(--c-forest-900) 0%, var(--c-forest-700) 100%); color: #ffffff;">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+                <div>
+                    <div class="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill mb-2" style="background: rgba(255,255,255,0.15); font-size: 0.8rem; color: var(--c-emerald-300);">
+                        <i class="bi bi-clock-history"></i> <span data-i18n="history_badge_log">{{ t('history_badge_log', 'SQLite Audited Activity Log') }}</span>
+                    </div>
+                    <h2 class="fw-bold text-white mb-2" data-i18n="history_title">
+                        {{ t('history_title') }}
+                    </h2>
+                    <p class="text-white-50 mb-0 small" data-i18n="history_subtitle">
+                        {{ t('history_subtitle') }}
+                    </p>
+                </div>
+                <div>
+                    <span class="badge bg-white text-success px-3 py-2 rounded-pill fw-bold shadow-sm">
+                        Total Logged: {{ (nlp_predictions | length) + (image_detections | length) + (advisories | length) }}
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Real-Time & Date Range Filter Toolbar Card (Phase 5) -->
+        <div class="card-modern p-3 mb-4">
+            <form method="GET" action="{{ url_for('main.history') }}">
+                <div class="row g-2 align-items-center">
+                    <!-- Search Input -->
+                    <div class="col-md-3">
+                        <div class="input-group">
+                            <span class="input-group-text bg-light text-muted border-end-0"><i class="bi bi-search"></i></span>
+                            <input type="text" id="historySearchInput" name="search" value="{{ filters.search or '' }}" class="form-control-modern border-start-0 py-2" placeholder="{{ t('history_search_placeholder') }}" data-i18n-placeholder="history_search_placeholder">
+                        </div>
+                    </div>
+
+                    <!-- Crop Filter Dropdown -->
+                    <div class="col-md-2">
+                        <select id="historyCropFilter" name="crop" class="form-select-modern py-2">
+                            <option value="" {% if not filters.crop %}selected{% endif %} data-i18n="history_filter_all_crops">{{ t('history_filter_all_crops') }}</option>
+                            <option value="Paddy" {% if filters.crop == 'Paddy' %}selected{% endif %}>Paddy (వరి)</option>
+                            <option value="Cotton" {% if filters.crop == 'Cotton' %}selected{% endif %}>Cotton (పత్తి)</option>
+                            <option value="Chilli" {% if filters.crop == 'Chilli' %}selected{% endif %}>Chilli (మిరప)</option>
+                            <option value="Tomato" {% if filters.crop == 'Tomato' %}selected{% endif %}>Tomato (టమోటా)</option>
+                            <option value="Bengal Gram" {% if filters.crop == 'Bengal Gram' %}selected{% endif %}>Bengal Gram (శనగ)</option>
+                            <option value="Groundnut" {% if filters.crop == 'Groundnut' %}selected{% endif %}>Groundnut (వేరుశనగ)</option>
+                            <option value="Maize" {% if filters.crop == 'Maize' %}selected{% endif %}>Maize (మొక్కజొన్న)</option>
+                        </select>
+                    </div>
+
+                    <!-- Pathogen Filter Dropdown -->
+                    <div class="col-md-2">
+                        <select id="historyDiseaseFilter" name="disease" class="form-select-modern py-2">
+                            <option value="" {% if not filters.disease %}selected{% endif %} data-i18n="history_filter_all_diseases">{{ t('history_filter_all_diseases') }}</option>
+                            <option value="Blast" {% if filters.disease == 'Blast' %}selected{% endif %}>Blast</option>
+                            <option value="Whitefly" {% if filters.disease == 'Whitefly' %}selected{% endif %}>Whitefly</option>
+                            <option value="Thrips" {% if filters.disease == 'Thrips' %}selected{% endif %}>Thrips</option>
+                            <option value="Early Blight" {% if filters.disease == 'Early Blight' %}selected{% endif %}>Early Blight</option>
+                            <option value="Fusarium Wilt" {% if filters.disease == 'Fusarium Wilt' %}selected{% endif %}>Fusarium Wilt</option>
+                            <option value="Pod Borer" {% if filters.disease == 'Pod Borer' %}selected{% endif %}>Pod Borer</option>
+                            <option value="Pink Bollworm" {% if filters.disease == 'Pink Bollworm' %}selected{% endif %}>Pink Bollworm</option>
+                            <option value="Tikka Leaf Spot" {% if filters.disease == 'Tikka Leaf Spot' %}selected{% endif %}>Tikka Leaf Spot</option>
+                        </select>
+                    </div>
+
+                    <!-- Date From -->
+                    <div class="col-md-2">
+                        <input type="date" name="date_from" value="{{ filters.date_from or '' }}" class="form-control-modern py-2 small" title="From Date">
+                    </div>
+
+                    <!-- Date To -->
+                    <div class="col-md-2">
+                        <input type="date" name="date_to" value="{{ filters.date_to or '' }}" class="form-control-modern py-2 small" title="To Date">
+                    </div>
+
+                    <!-- Actions: Filter & Reset -->
+                    <div class="col-md-1 d-flex gap-1 justify-content-end">
+                        <button type="submit" class="btn btn-sm btn-premium-primary py-2 px-2" title="Apply Filter" data-i18n-title="history_btn_filter">
+                            <i class="bi bi-funnel-fill"></i>
+                        </button>
+                        <a href="{{ url_for('main.history') }}" class="btn btn-sm btn-outline-secondary py-2 px-2" title="Reset Filters" data-i18n-title="history_btn_reset">
+                            <i class="bi bi-arrow-counterclockwise"></i>
+                        </a>
+                    </div>
+                </div>
+            </form>
+            <div class="d-flex align-items-center justify-content-between mt-2 pt-2 border-top small text-muted">
+                <span><i class="bi bi-shield-lock-fill text-success me-1"></i> <span data-i18n="history_isolation_badge">Farmer Isolation Active: Showing records exclusively logged under your account.</span></span>
+                <span class="badge bg-light text-dark border">Found: {{ nlp_predictions | length }} records</span>
+            </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <ul class="nav nav-pills mb-3 gap-2" id="historyTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active fw-bold rounded-pill px-4" id="nlp-tab" data-bs-toggle="pill" data-bs-target="#nlp-pane" type="button" role="tab">
+                    <i class="bi bi-chat-square-text me-1"></i> <span data-i18n="history_tab_nlp">{{ t('history_tab_nlp') }}</span> ({{ nlp_predictions | length }})
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link fw-bold rounded-pill px-4" id="image-tab" data-bs-toggle="pill" data-bs-target="#image-pane" type="button" role="tab">
+                    <i class="bi bi-camera me-1"></i> <span data-i18n="history_tab_img">{{ t('history_tab_img') }}</span> ({{ image_detections | length }})
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link fw-bold rounded-pill px-4" id="advisory-tab" data-bs-toggle="pill" data-bs-target="#advisory-pane" type="button" role="tab">
+                    <i class="bi bi-flower1 me-1"></i> <span data-i18n="history_tab_adv">{{ t('history_tab_adv') }}</span> ({{ advisories | length }})
+                </button>
+            </li>
+        </ul>
+
+        <div class="tab-content mb-5" id="historyTabContent">
+            <!-- 1. NLP Predictions Pane -->
+            <div class="tab-pane fade show active" id="nlp-pane" role="tabpanel">
+                <div class="table-modern-wrapper">
+                    <div class="table-responsive">
+                        <table class="table table-modern align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th data-i18n="history_col_crop">{{ t('history_col_crop') }}</th>
+                                    <th data-i18n="history_col_symptom">{{ t('history_col_symptom') }}</th>
+                                    <th data-i18n="history_col_disease">{{ t('history_col_disease') }}</th>
+                                    <th data-i18n="history_col_score">{{ t('history_col_score') }}</th>
+                                    <th data-i18n="history_col_status">{{ t('history_col_status') }}</th>
+                                    <th data-i18n="history_col_date">{{ t('history_col_date') }}</th>
+                                    <th data-i18n="history_col_actions">{{ t('history_col_actions') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody id="historyTableBody">
+                                {% if nlp_predictions and nlp_predictions | length > 0 %}
+                                    {% for item in nlp_predictions %}
+                                    <tr data-history-row data-crop="{{ item.crop_name }}" data-disease="{{ item.detected_disease }}">
+                                        <td>
+                                            <span class="badge bg-success-subtle text-success-emphasis border border-success-subtle px-2 py-1 fw-bold">
+                                                {{ item.crop_name }}
+                                            </span>
+                                            <div class="small text-muted mt-1">{{ item.crop_stage }}</div>
+                                        </td>
+                                        <td style="max-width: 260px;">
+                                            <div class="text-truncate text-muted small" title="{{ item.symptom_description }}">
+                                                "{{ item.symptom_description }}"
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="fw-bold text-dark">{{ item.detected_disease }}</span>
+                                        </td>
+                                        <td>
+                                            <div class="d-flex align-items-center gap-2">
+                                                <span class="fw-bold text-success small">{{ item.confidence_score }}%</span>
+                                                <div class="progress-track-modern" style="width: 50px;">
+                                                    <div class="progress-bar-modern" style="width: {{ item.confidence_score }}%"></div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            {% if item.needs_further_diagnosis %}
+                                                <span class="badge bg-warning-subtle text-warning-emphasis" data-i18n="res_status_pending">Further diagnosis needed</span>
+                                            {% else %}
+                                                <span class="badge bg-success-subtle text-success-emphasis" data-i18n="res_status_confirmed">High Confidence</span>
+                                            {% endif %}
+                                        </td>
+                                        <td class="small text-muted">{{ item.created_at }}</td>
+                                        <td>
+                                            <button type="button" class="btn btn-sm btn-outline-success rounded-pill px-3" onclick="openDetailsModal('{{ item.crop_name | escape }}', '{{ item.crop_stage | escape }}', '{{ item.detected_disease | escape }}', '{{ item.confidence_score }}', '{{ item.symptom_description | escape }}', '{{ item.created_at }}')">
+                                                <i class="bi bi-eye me-1"></i> <span data-i18n="history_btn_details">Details</span>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                {% else %}
+                                    <tr>
+                                        <td colspan="7">
+                                            <div class="empty-state-modern">
+                                                <div class="empty-icon-circle"><i class="bi bi-journal-x"></i></div>
+                                                <h5 class="fw-bold" data-i18n="dash_empty_title">No Diagnoses Logged Yet</h5>
+                                                <p class="text-muted small col-md-6 mx-auto mb-3" data-i18n="dash_empty_desc">
+                                                    Start by analyzing your first crop symptom description or photo.
+                                                </p>
+                                                <a href="{{ url_for('disease.predict_page') }}" class="btn btn-premium-primary">
+                                                    <i class="bi bi-plus-circle"></i> <span data-i18n="dash_btn_first_pred">Start First Diagnosis</span>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- No Filter Matches Notice -->
+                <div id="historyNoMatches" class="card-modern text-center py-5 d-none mt-3">
+                    <i class="bi bi-funnel text-muted fs-1 mb-2 d-block"></i>
+                    <h6 class="fw-bold text-dark" data-i18n="history_no_matches">No records match your search filter</h6>
+                    <p class="small text-muted mb-0" data-i18n="history_no_matches_sub">Try clearing your search query or selecting "All Crops".</p>
+                </div>
+            </div>
+
+            <!-- 2. Image Detections Pane -->
+            <div class="tab-pane fade" id="image-pane" role="tabpanel">
+                <div class="table-modern-wrapper">
+                    <div class="table-responsive">
+                        <table class="table table-modern align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th data-i18n="history_img_col_photo">Leaf Photo</th>
+                                    <th data-i18n="history_img_col_crop">Crop</th>
+                                    <th data-i18n="history_img_col_disease">Disease Identified</th>
+                                    <th data-i18n="history_img_col_conf">Confidence</th>
+                                    <th data-i18n="history_img_col_sev">Severity</th>
+                                    <th data-i18n="history_img_col_time">Timestamp</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if image_detections and image_detections | length > 0 %}
+                                    {% for d in image_detections %}
+                                    <tr>
+                                        <td style="width: 80px;">
+                                            <img src="{{ d.image_url }}" alt="Leaf" class="rounded-3 border object-fit-cover shadow-sm" style="width: 50px; height: 50px;">
+                                        </td>
+                                        <td class="fw-bold">{{ d.detected_crop }}</td>
+                                        <td>{{ d.detected_disease }}</td>
+                                        <td>
+                                            <span class="badge bg-success-subtle text-success-emphasis border border-success-subtle">
+                                                {{ d.confidence }}%
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-warning text-dark">{{ d.severity }}</span>
+                                        </td>
+                                        <td class="small text-muted">{{ d.created_at }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                {% else %}
+                                    <tr>
+                                        <td colspan="6">
+                                            <div class="empty-state-modern">
+                                                <div class="empty-icon-circle"><i class="bi bi-camera"></i></div>
+                                                <h5 class="fw-bold" data-i18n="history_img_empty_title">No Image Diagnoses Yet</h5>
+                                                <p class="text-muted small col-md-6 mx-auto mb-3" data-i18n="history_img_empty_desc">
+                                                    Upload a plant leaf photo to view visual diagnostic records.
+                                                </p>
+                                                <a href="{{ url_for('disease.disease_detect_page') }}" class="btn btn-premium-primary">
+                                                    <i class="bi bi-camera"></i> <span data-i18n="nav_image_detect">Upload Leaf Image</span>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. Advisory Queries Pane -->
+            <div class="tab-pane fade" id="advisory-pane" role="tabpanel">
+                <div class="table-modern-wrapper">
+                    <div class="table-responsive">
+                        <table class="table table-modern align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th data-i18n="history_adv_col_mode">Input Mode</th>
+                                    <th data-i18n="history_adv_col_query">Farmer's Query</th>
+                                    <th data-i18n="history_adv_col_advice">Advisory Advice Given</th>
+                                    <th data-i18n="history_adv_col_lang">Language</th>
+                                    <th data-i18n="history_adv_col_time">Timestamp</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if advisories and advisories | length > 0 %}
+                                    {% for a in advisories %}
+                                    <tr>
+                                        <td>
+                                            <span class="badge bg-light text-dark border">
+                                                <i class="bi {% if a.input_type == 'voice' %}bi-mic-fill text-danger{% else %}bi-keyboard text-primary{% endif %} me-1"></i>
+                                                {{ a.input_type | upper }}
+                                            </span>
+                                        </td>
+                                        <td class="fw-semibold text-dark" style="max-width: 280px;">{{ a.user_query }}</td>
+                                        <td class="small text-muted" style="max-width: 360px;">{{ a.response_text | truncate(110) }}</td>
+                                        <td>
+                                            <span class="badge bg-secondary-subtle text-secondary-emphasis">{{ a.detected_language | upper }}</span>
+                                        </td>
+                                        <td class="small text-muted">{{ a.created_at }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                {% else %}
+                                    <tr>
+                                        <td colspan="5">
+                                            <div class="empty-state-modern">
+                                                <div class="empty-icon-circle"><i class="bi bi-chat-quote"></i></div>
+                                                <h5 class="fw-bold" data-i18n="history_adv_empty_title">No Advisory Queries Yet</h5>
+                                                <p class="text-muted small col-md-6 mx-auto mb-3" data-i18n="history_adv_empty_desc">
+                                                    Ask your first crop question to get expert agricultural guidance.
+                                                </p>
+                                                <a href="{{ url_for('advisory.advisory_page') }}" class="btn btn-premium-primary">
+                                                    <i class="bi bi-mic"></i> <span data-i18n="history_adv_ask_btn">Ask First Question</span>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Details Modal -->
+<div class="modal fade" id="historyDetailModal" tabindex="-1" aria-labelledby="historyDetailModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4 border-0 shadow">
+            <div class="modal-header border-bottom pb-3">
+                <h5 class="modal-title fw-bold text-dark" id="historyDetailModalLabel">
+                    <i class="bi bi-clipboard2-check text-success me-2"></i> <span data-i18n="history_modal_title">Diagnosis Detail Audit</span>
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span id="modalCropBadge" class="badge bg-success-subtle text-success-emphasis border border-success-subtle px-3 py-1 fw-bold fs-6">Crop</span>
+                    <span id="modalDate" class="small text-muted">Date</span>
+                </div>
+
+                <div class="p-3 bg-light rounded-3 mb-3 border">
+                    <div class="small fw-bold text-muted text-uppercase mb-1" data-i18n="history_modal_pathogen">Identified Pathogen / Pest:</div>
+                    <h4 id="modalDisease" class="fw-bold text-success mb-1">Disease Name</h4>
+                    <div class="small text-muted"><span data-i18n="history_modal_score">Confidence Score:</span> <strong id="modalScore">--%</strong></div>
+                </div>
+
+                <div class="mb-3">
+                    <div class="small fw-bold text-muted text-uppercase mb-1" data-i18n="history_modal_symptoms">Reported Symptoms:</div>
+                    <div id="modalSymptoms" class="p-3 bg-white rounded-3 border small text-dark fst-italic">...</div>
+                </div>
+            </div>
+            <div class="modal-footer border-top pt-2">
+                <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal" data-i18n="history_modal_close">Close</button>
+                <a id="modalAdvisoryLink" href="#" class="btn btn-premium-primary rounded-pill px-4">
+                    <i class="bi bi-book-half me-1"></i> <span data-i18n="history_btn_advisory">View Advisory</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function openDetailsModal(crop, stage, disease, score, symptoms, date) {
+    document.getElementById('modalCropBadge').textContent = `${crop} (${stage || 'General'})`;
+    document.getElementById('modalDisease').textContent = disease;
+    document.getElementById('modalScore').textContent = `${score}%`;
+    document.getElementById('modalSymptoms').textContent = `"${symptoms}"`;
+    document.getElementById('modalDate').textContent = date;
+    document.getElementById('modalAdvisoryLink').href = `/advisory?disease=${encodeURIComponent(disease)}&crop=${encodeURIComponent(crop)}`;
+
+    const modal = new bootstrap.Modal(document.getElementById('historyDetailModal'));
+    modal.show();
+}
+</script>
+{% endblock %}
